@@ -1245,4 +1245,173 @@ html, body {
     line-height: 1.4;
 }
 
+/* ==========================================================================
+   Full-Screen Gated Login Portal (Mandatory Gated Access)
+   ========================================================================== */
+#gated-auth-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+}
+
+#gated-auth-overlay.unlocked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.gated-portal-card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.2);
+    padding: 34px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.gated-portal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6366f1, #06b6d4, #ec4899);
+}
+
+.gated-brand-badge {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #fff;
+    margin: 0 auto 16px auto;
+    box-shadow: var(--shadow-glow);
+}
+
+.gated-portal-card h1 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.gated-portal-card p.subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+}
+
+/* User Type Selection Segment */
+.user-type-selector {
+    display: flex;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 16px;
+}
+
+.user-type-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-type-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+.user-type-btn.active {
+    background: rgba(99, 102, 241, 0.25);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+.user-type-btn span.type-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.user-type-btn span.type-desc {
+    font-size: 0.68rem;
+    opacity: 0.75;
+}
+
+/* Domain Requirement Notice Badge */
+.domain-notice-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(6, 182, 212, 0.12);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    color: #38bdf8;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    transition: all 0.2s ease;
+}
+
+.domain-notice-badge.visitor {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+/* Tour Interface Locking Rules */
+#tour-app-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+}
+
+#tour-app-container.unlocked {
+    opacity: 1;
+    visibility: visible;
+}
+
+
 

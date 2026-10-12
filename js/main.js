@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const compassWidget = document.getElementById('compass-widget');
 
     // UI Elements - Auth & Profile
-    const authOpenBtn = document.getElementById('auth-open-btn');
     const authSignoutBtn = document.getElementById('auth-signout-btn');
     const userProfilePill = document.getElementById('user-profile-pill');
     const userAvatarLetter = document.getElementById('user-avatar-letter');
@@ -31,15 +30,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userRoleText = document.getElementById('user-role-text');
     const bookmarksDrawerBtn = document.getElementById('bookmarks-drawer-btn');
 
-    // UI Elements - Auth Modal
-    const authModalBackdrop = document.getElementById('auth-modal-backdrop');
-    const authCloseBtn = document.getElementById('auth-close-btn');
+    // UI Elements - Gated Portal & Access Control
+    const gatedAuthOverlay = document.getElementById('gated-auth-overlay');
+    const tourAppContainer = document.getElementById('tour-app-container');
+    const typeScetBtn = document.getElementById('type-scet-btn');
+    const typeVisitorBtn = document.getElementById('type-visitor-btn');
+    const domainNoticeBadge = document.getElementById('domain-notice-badge');
+    const domainNoticeText = document.getElementById('domain-notice-text');
+    const googleAuthBtnText = document.getElementById('google-auth-btn-text');
+    const signupRoleGroup = document.getElementById('signup-role-group');
+    const signinEmail = document.getElementById('signin-email');
+    const signupEmail = document.getElementById('signup-email');
+    const authErrorBanner = document.getElementById('auth-error-banner');
     const tabSignIn = document.getElementById('tab-sign-in');
     const tabSignUp = document.getElementById('tab-sign-up');
     const formSignIn = document.getElementById('form-sign-in');
     const formSignUp = document.getElementById('form-sign-up');
-    const authErrorBanner = document.getElementById('auth-error-banner');
     const btnGoogleAuth = document.getElementById('btn-google-auth');
+
+    let selectedUserType = 'campus'; // 'campus' | 'visitor'
 
     // UI Elements - Bookmarks Drawer
     const bookmarksDrawer = document.getElementById('bookmarks-drawer');
@@ -133,31 +142,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateDropdownList(scenesData);
 
     // ========================================================================
-    // 3. Auth State Observer & UI Synchronization
+    // 3. Auth State Observer & Gated Access Synchronization
     // ========================================================================
     authManager.initAuth((user) => {
         if (user) {
-            // Authenticated State
-            authOpenBtn.style.display = 'none';
-            userProfilePill.style.display = 'flex';
-            authSignoutBtn.style.display = 'flex';
-            bookmarksDrawerBtn.style.display = 'flex';
+            // Unlock Virtual Tour Viewport & Controls
+            if (gatedAuthOverlay) gatedAuthOverlay.classList.add('unlocked');
+            if (tourAppContainer) tourAppContainer.classList.add('unlocked');
+
+            // Authenticated Header Elements
+            if (userProfilePill) userProfilePill.style.display = 'flex';
+            if (authSignoutBtn) authSignoutBtn.style.display = 'flex';
+            if (bookmarksDrawerBtn) bookmarksDrawerBtn.style.display = 'flex';
 
             const name = user.displayName || user.email.split('@')[0];
-            userDisplayName.textContent = name;
-            userRoleText.textContent = user.role || 'student';
-            userAvatarLetter.textContent = name.charAt(0).toUpperCase();
+            if (userDisplayName) userDisplayName.textContent = name;
+            if (userRoleText) {
+                userRoleText.textContent = user.userType === 'campus'
+                    ? (user.role || 'campus')
+                    : 'visitor';
+            }
+            if (userAvatarLetter) userAvatarLetter.textContent = name.charAt(0).toUpperCase();
 
             // Refresh Bookmarks
             updateBookmarkButtonState(currentActiveSceneKey);
             loadBookmarksDrawer();
         } else {
-            // Unauthenticated State
-            authOpenBtn.style.display = 'flex';
-            userProfilePill.style.display = 'none';
-            authSignoutBtn.style.display = 'none';
-            bookmarksDrawerBtn.style.display = 'none';
-            bookmarksDrawer.classList.remove('active');
+            // Locked Gated Access: Show Login Screen, Hide Tour
+            if (gatedAuthOverlay) gatedAuthOverlay.classList.remove('unlocked');
+            if (tourAppContainer) tourAppContainer.classList.remove('unlocked');
+
+            if (userProfilePill) userProfilePill.style.display = 'none';
+            if (authSignoutBtn) authSignoutBtn.style.display = 'none';
+            if (bookmarksDrawerBtn) bookmarksDrawerBtn.style.display = 'none';
+            if (bookmarksDrawer) bookmarksDrawer.classList.remove('active');
+            if (reviewsModalBackdrop) reviewsModalBackdrop.classList.remove('active');
 
             updateBookmarkButtonState(currentActiveSceneKey);
         }
@@ -346,28 +365,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ========================================================================
-    // 5. Auth Modal Event Handlers
+    // 5. Gated Auth Portal & Domain Validation Event Handlers
     // ========================================================================
-    function showAuthModal(message = "") {
+    function showAuthError(message = "") {
+        if (!authErrorBanner) return;
         if (message) {
             authErrorBanner.textContent = message;
             authErrorBanner.classList.add('show');
         } else {
             authErrorBanner.classList.remove('show');
         }
-        authModalBackdrop.classList.add('active');
     }
 
-    if (authOpenBtn) {
-        authOpenBtn.addEventListener('click', () => showAuthModal());
+    function showAuthModal(message = "") {
+        if (gatedAuthOverlay) gatedAuthOverlay.classList.remove('unlocked');
+        if (tourAppContainer) tourAppContainer.classList.remove('unlocked');
+        showAuthError(message);
     }
 
-    if (authCloseBtn) {
-        authCloseBtn.addEventListener('click', () => {
-            authModalBackdrop.classList.remove('active');
-        });
+    // Dual User Type Selection Logic
+    function setUserType(type) {
+        selectedUserType = type;
+        showAuthError('');
+
+        if (type === 'campus') {
+            if (typeScetBtn) typeScetBtn.classList.add('active');
+            if (typeVisitorBtn) typeVisitorBtn.classList.remove('active');
+            if (domainNoticeBadge) domainNoticeBadge.classList.remove('visitor');
+            if (domainNoticeText) domainNoticeText.textContent = 'SCET members must use official @scet.ac.in email';
+            if (signinEmail) signinEmail.placeholder = 'student@scet.ac.in';
+            if (signupEmail) signupEmail.placeholder = 'student@scet.ac.in';
+            if (signupRoleGroup) signupRoleGroup.style.display = 'block';
+            if (googleAuthBtnText) googleAuthBtnText.textContent = 'Sign In with SCET Google Account';
+        } else {
+            if (typeVisitorBtn) typeVisitorBtn.classList.add('active');
+            if (typeScetBtn) typeScetBtn.classList.remove('active');
+            if (domainNoticeBadge) domainNoticeBadge.classList.add('visitor');
+            if (domainNoticeText) domainNoticeText.textContent = 'Visitors and guests can use any valid email address';
+            if (signinEmail) signinEmail.placeholder = 'visitor@gmail.com';
+            if (signupEmail) signupEmail.placeholder = 'visitor@gmail.com';
+            if (signupRoleGroup) signupRoleGroup.style.display = 'none';
+            if (googleAuthBtnText) googleAuthBtnText.textContent = 'Sign In with Google';
+        }
     }
 
+    if (typeScetBtn) typeScetBtn.addEventListener('click', () => setUserType('campus'));
+    if (typeVisitorBtn) typeVisitorBtn.addEventListener('click', () => setUserType('visitor'));
+
+    // Sign Out Handler (immediately re-locks tour)
     if (authSignoutBtn) {
         authSignoutBtn.addEventListener('click', async () => {
             await authManager.signOutUser();
@@ -375,81 +420,94 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Tab Switching
-    tabSignIn.addEventListener('click', () => {
-        tabSignIn.classList.add('active');
-        tabSignUp.classList.remove('active');
-        formSignIn.style.display = 'block';
-        formSignUp.style.display = 'none';
-        authErrorBanner.classList.remove('show');
-    });
+    if (tabSignIn && tabSignUp) {
+        tabSignIn.addEventListener('click', () => {
+            tabSignIn.classList.add('active');
+            tabSignUp.classList.remove('active');
+            formSignIn.style.display = 'block';
+            formSignUp.style.display = 'none';
+            showAuthError('');
+        });
 
-    tabSignUp.addEventListener('click', () => {
-        tabSignUp.classList.add('active');
-        tabSignIn.classList.remove('active');
-        formSignUp.style.display = 'block';
-        formSignIn.style.display = 'none';
-        authErrorBanner.classList.remove('show');
-    });
+        tabSignUp.addEventListener('click', () => {
+            tabSignUp.classList.add('active');
+            tabSignIn.classList.remove('active');
+            formSignUp.style.display = 'block';
+            formSignIn.style.display = 'none';
+            showAuthError('');
+        });
+    }
 
-    // Sign In Submit
-    formSignIn.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('signin-email').value.trim();
-        const password = document.getElementById('signin-password').value;
-        const submitBtn = document.getElementById('btn-submit-signin');
+    // Sign In Submit with Strict Domain Validation
+    if (formSignIn) {
+        formSignIn.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = (signinEmail ? signinEmail.value : '').trim();
+            const password = document.getElementById('signin-password').value;
+            const submitBtn = document.getElementById('btn-submit-signin');
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Signing In...</span>';
-        authErrorBanner.classList.remove('show');
+            // Strict Domain Rule Check
+            if (selectedUserType === 'campus' && !email.toLowerCase().endsWith('@scet.ac.in')) {
+                showAuthError("SCET campus members must use their official @scet.ac.in email address.");
+                return;
+            }
 
-        const result = await authManager.signInWithEmail(email, password);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Sign In</span>';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Verifying & Entering...</span>';
+            showAuthError('');
 
-        if (result.success) {
-            authModalBackdrop.classList.remove('active');
-            formSignIn.reset();
-        } else {
-            authErrorBanner.textContent = result.error;
-            authErrorBanner.classList.add('show');
-        }
-    });
+            const result = await authManager.signInWithEmail(email, password, selectedUserType);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Enter Virtual Tour</span>';
 
-    // Sign Up Submit
-    formSignUp.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('signup-name').value.trim();
-        const email = document.getElementById('signup-email').value.trim();
-        const password = document.getElementById('signup-password').value;
-        const role = document.getElementById('signup-role').value;
-        const submitBtn = document.getElementById('btn-submit-signup');
+            if (result.success) {
+                formSignIn.reset();
+            } else {
+                showAuthError(result.error);
+            }
+        });
+    }
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>Creating Account...</span>';
-        authErrorBanner.classList.remove('show');
+    // Sign Up Submit with Strict Domain Validation
+    if (formSignUp) {
+        formSignUp.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = (signupEmail ? signupEmail.value : '').trim();
+            const password = document.getElementById('signup-password').value;
+            const roleSelect = document.getElementById('signup-role');
+            const role = selectedUserType === 'campus' ? (roleSelect ? roleSelect.value : 'student') : 'visitor';
+            const submitBtn = document.getElementById('btn-submit-signup');
 
-        const result = await authManager.signUpWithEmail(email, password, name, role);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>Create Account</span>';
+            // Strict Domain Rule Check
+            if (selectedUserType === 'campus' && !email.toLowerCase().endsWith('@scet.ac.in')) {
+                showAuthError("SCET campus members must use their official @scet.ac.in email address.");
+                return;
+            }
 
-        if (result.success) {
-            authModalBackdrop.classList.remove('active');
-            formSignUp.reset();
-        } else {
-            authErrorBanner.textContent = result.error;
-            authErrorBanner.classList.add('show');
-        }
-    });
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Creating Account...</span>';
+            showAuthError('');
 
-    // Google Sign In
+            const result = await authManager.signUpWithEmail(email, password, name, selectedUserType, role);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Register & Access Tour</span>';
+
+            if (result.success) {
+                formSignUp.reset();
+            } else {
+                showAuthError(result.error);
+            }
+        });
+    }
+
+    // Google Sign-In with Domain Validation
     if (btnGoogleAuth) {
         btnGoogleAuth.addEventListener('click', async () => {
-            const res = await authManager.signInWithGoogle();
-            if (res.success) {
-                authModalBackdrop.classList.remove('active');
-            } else {
-                authErrorBanner.textContent = res.error;
-                authErrorBanner.classList.add('show');
+            showAuthError('');
+            const res = await authManager.signInWithGoogle(selectedUserType);
+            if (!res.success) {
+                showAuthError(res.error);
             }
         });
     }
@@ -576,11 +634,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Global Keybindings (ESC to close modals)
+    // Global Keybindings (ESC to close drawers and modals)
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (infoModal) infoModal.classList.remove('active');
-            if (authModalBackdrop) authModalBackdrop.classList.remove('active');
             if (bookmarksDrawer) bookmarksDrawer.classList.remove('active');
             if (reviewsModalBackdrop) reviewsModalBackdrop.classList.remove('active');
         }

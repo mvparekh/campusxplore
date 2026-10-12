@@ -15,182 +15,40 @@
 </head>
 <body>
 
-    <!-- Main 360 Viewport -->
-    <main id="panorama-container">
-        <div id="panorama"></div>
-
-        <!-- In-Tour Floating Action Cluster -->
-        <div class="viewer-action-cluster">
-            <button class="viewer-floating-btn" id="scene-bookmark-btn" title="Save this spot to bookmarks">
-                <img src="assets/icons/bookmark.svg" alt="Bookmark icon">
-            </button>
-            <button class="viewer-floating-btn" id="scene-review-btn" title="View notes and reviews">
-                <img src="assets/icons/star.svg" alt="Review star icon">
-            </button>
-        </div>
-    </main>
-
-    <!-- Header Navigation -->
-    <header id="tour-header">
-        <div class="header-brand">
-            <div class="header-brand-icon">CX</div>
-            <div class="brand-text">
-                <h1>CampusXplore</h1>
-                <span>SCET Interactive Virtual Tour</span>
-            </div>
-        </div>
-
-        <div class="header-center-info">
-            <div class="location-chip">
-                <span>📍</span>
-                <span id="current-location-name">Main Administrative Entrance</span>
-            </div>
-            <span class="floor-badge" id="current-floor-badge">Ground Floor</span>
-        </div>
-
-        <div class="header-actions">
-            <!-- Audio Voiceover Toggle -->
-            <button class="btn-icon" id="audio-toggle-btn" title="Toggle Voice Narration">
-                <img src="assets/icons/sound-off.svg" alt="Audio narration toggle">
-            </button>
-
-            <!-- Bookmarks Drawer Button (Authenticated) -->
-            <button class="btn-icon" id="bookmarks-drawer-btn" title="Saved Locations" style="display: none;">
-                <img src="assets/icons/bookmark.svg" alt="Bookmarks">
-            </button>
-
-            <!-- User Profile Pill (Authenticated) -->
-            <div class="user-profile-pill" id="user-profile-pill" style="display: none;">
-                <div class="user-avatar-circle" id="user-avatar-letter">U</div>
-                <div class="user-meta-info">
-                    <span class="user-name-text" id="user-display-name">Student</span>
-                    <span class="user-role-badge" id="user-role-text">student</span>
-                </div>
-            </div>
-
-            <!-- Sign Out Button (Authenticated) -->
-            <button class="btn-icon" id="auth-signout-btn" title="Sign Out" style="display: none;">
-                <img src="assets/icons/user.svg" alt="Sign out" style="filter: opacity(0.85);">
-            </button>
-
-            <!-- Sign In Trigger (Unauthenticated) -->
-            <button class="btn-primary-pill" id="auth-open-btn">
-                <img src="assets/icons/user.svg" alt="Sign in" style="width: 14px; height: 14px; filter: invert(1);">
-                <span>Sign In</span>
-            </button>
-
-            <!-- Reset Tour -->
-            <button class="btn-icon" id="reset-tour-btn" title="Reset to Entrance">
-                <img src="assets/icons/reset.svg" alt="Reset">
-            </button>
-        </div>
-    </header>
-
-    <!-- Search & Quick Navigation Bar -->
-    <aside id="scene-search-bar">
-        <div class="search-input-wrapper">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="scene-search-input" placeholder="Search departments, labs, landmarks..." autocomplete="off">
-        </div>
-
-        <div class="category-filter-chips">
-            <button class="filter-chip active" data-category="all">All</button>
-            <button class="filter-chip" data-category="department">Departments</button>
-            <button class="filter-chip" data-category="landmark">Landmarks</button>
-            <button class="filter-chip" data-category="pathway">Paths & Gates</button>
-        </div>
-
-        <div id="scene-dropdown-list">
-            <!-- Populated dynamically by main.js -->
-        </div>
-    </aside>
-
-    <!-- Compass Widget -->
-    <div id="compass-widget" title="Click to align view north">
-        <img id="compass-needle" src="assets/icons/compass.svg" alt="Compass Needle">
-    </div>
-
-    <!-- Interactive Floating 2D Map with Real-Time Radar Cone -->
-    <section id="map-block">
-        <div id="map-header">
-            <div class="map-header-title">
-                <img src="assets/icons/map.svg" alt="Map icon" style="width: 16px; height: 16px; filter: invert(0.8);">
-                <span>2D Campus Map</span>
-            </div>
-            <div class="map-controls-group">
-                <button class="map-btn-tiny" id="map-toggle-minimize" title="Minimize / Expand Map">−</button>
-            </div>
-        </div>
-
-        <div id="map-floor-bar">
-            <button class="floor-tab-btn active" data-floor="all">All Levels</button>
-            <button class="floor-tab-btn" data-floor="Ground Floor">Ground</button>
-            <button class="floor-tab-btn" data-floor="Floor 1">Floor 1</button>
-        </div>
-
-        <div id="map-wrapper">
-            <!-- 2D Floor Plan -->
-            <img src="assets/maps/scet-first-floor.jpg" 
-                 alt="SCET Campus Map" 
-                 id="campusMapImage">
-
-            <!-- Interactive Clickable Pins Layer -->
-            <div id="map-pins-layer"></div>
-
-            <!-- Active User Position Pin with FOV Radar Cone -->
-            <div id="map-pointer">
-                <div id="map-pointer-ring"></div>
-                <div id="radar-cone" title="Viewing Orientation FOV"></div>
-            </div>
-        </div>
-
-        <!-- Button to expand map when minimized -->
-        <button class="map-expand-btn" id="map-expand-btn" title="Open Map">
-            <img src="assets/icons/map.svg" alt="Expand map" style="width: 22px; height: 22px; filter: invert(1);">
-        </button>
-    </section>
-
-    <!-- Hotspot Information Modal / Flashcard -->
-    <div id="info-modal" role="dialog" aria-modal="true">
-        <div class="modal-header">
-            <h3 id="modal-title">Location Information</h3>
-            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close dialog">×</button>
-        </div>
-        <div id="modal-body">
-            <!-- Dynamic info content injected by main.js -->
-        </div>
-    </div>
-
     <!-- ====================================================================
-         Bookmarks Slide-out Drawer
+         Full-Screen Gated Login Portal (Mandatory Gated Access)
          ==================================================================== -->
-    <div id="bookmarks-drawer" role="complementary" aria-label="Saved Bookmarks">
-        <div class="drawer-header">
-            <h3><span>🔖</span> Saved Locations</h3>
-            <button class="modal-close-btn" id="bookmarks-close-btn">×</button>
-        </div>
-        <div class="bookmarks-list" id="bookmarks-list-container">
-            <!-- Dynamic bookmarks injected by main.js -->
-        </div>
-    </div>
+    <div id="gated-auth-overlay">
+        <div class="gated-portal-card">
+            <div class="gated-brand-badge">🏛️</div>
+            <h1>CampusXplore</h1>
+            <p class="subtitle">SCET Virtual Campus — 360° Interactive Tour</p>
 
-    <!-- ====================================================================
-         Authentication Modal (Sign In & Sign Up)
-         ==================================================================== -->
-    <div class="modal-backdrop" id="auth-modal-backdrop" role="dialog" aria-modal="true">
-        <div class="auth-modal-card">
-            <div class="auth-header">
-                <h2 id="auth-modal-title">Welcome to CampusXplore</h2>
-                <button class="modal-close-btn" id="auth-close-btn">×</button>
+            <!-- Dual User Type Segmented Selector -->
+            <div class="user-type-selector">
+                <button type="button" class="user-type-btn active" id="type-scet-btn" data-type="campus">
+                    <span class="type-title">🏛️ SCET Member</span>
+                    <span class="type-desc">Student / Faculty</span>
+                </button>
+                <button type="button" class="user-type-btn" id="type-visitor-btn" data-type="visitor">
+                    <span class="type-title">🌍 External Visitor</span>
+                    <span class="type-desc">Guest / Explorer</span>
+                </button>
             </div>
 
-            <!-- Tabs -->
+            <!-- Domain Notice Badge -->
+            <div class="domain-notice-badge" id="domain-notice-badge">
+                <span>🔒</span>
+                <span id="domain-notice-text">SCET members must use official @scet.ac.in email</span>
+            </div>
+
+            <!-- Tabs: Sign In / Create Account -->
             <div class="auth-tabs">
                 <button class="auth-tab-btn active" id="tab-sign-in">Sign In</button>
-                <button class="auth-tab-btn" id="tab-sign-up">Sign Up</button>
+                <button class="auth-tab-btn" id="tab-sign-up">Create Account</button>
             </div>
 
-            <!-- Error Banner -->
+            <!-- Inline Error Banner -->
             <div class="auth-error-banner" id="auth-error-banner"></div>
 
             <!-- Sign In Form -->
@@ -204,7 +62,7 @@
                     <input type="password" id="signin-password" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn-auth-submit" id="btn-submit-signin">
-                    <span>Sign In</span>
+                    <span>Enter Virtual Tour</span>
                 </button>
             </form>
 
@@ -222,16 +80,15 @@
                     <label for="signup-password">Password</label>
                     <input type="password" id="signup-password" placeholder="Min 6 characters" minlength="6" required autocomplete="new-password">
                 </div>
-                <div class="auth-form-group">
+                <div class="auth-form-group" id="signup-role-group">
                     <label for="signup-role">Role</label>
                     <select id="signup-role">
                         <option value="student">Student</option>
                         <option value="faculty">Faculty</option>
-                        <option value="visitor">Visitor</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-auth-submit" id="btn-submit-signup">
-                    <span>Create Account</span>
+                    <span>Register & Access Tour</span>
                 </button>
             </form>
 
@@ -242,50 +99,204 @@
             <!-- Google Sign-In Option -->
             <button type="button" class="btn-google-auth" id="btn-google-auth">
                 <img src="assets/icons/google.svg" alt="Google">
-                <span>Continue with Google</span>
+                <span id="google-auth-btn-text">Sign In with SCET Google Account</span>
             </button>
         </div>
     </div>
 
     <!-- ====================================================================
-         Reviews & Notes Modal
+         Tour Application Container (Gated until authenticated)
          ==================================================================== -->
-    <div class="modal-backdrop" id="reviews-modal-backdrop" role="dialog" aria-modal="true">
-        <div class="auth-modal-card" style="max-width: 440px;">
-            <div class="modal-header">
-                <div>
-                    <h3 id="review-scene-title">Campus Spot Notes</h3>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Leave a note or review for this location</span>
+    <div id="tour-app-container">
+        <!-- Main 360 Viewport -->
+        <main id="panorama-container">
+            <div id="panorama"></div>
+
+            <!-- In-Tour Floating Action Cluster -->
+            <div class="viewer-action-cluster">
+                <button class="viewer-floating-btn" id="scene-bookmark-btn" title="Save this spot to bookmarks">
+                    <img src="assets/icons/bookmark.svg" alt="Bookmark icon">
+                </button>
+                <button class="viewer-floating-btn" id="scene-review-btn" title="View notes and reviews">
+                    <img src="assets/icons/star.svg" alt="Review star icon">
+                </button>
+            </div>
+        </main>
+
+        <!-- Header Navigation -->
+        <header id="tour-header">
+            <div class="header-brand">
+                <div class="header-brand-icon">CX</div>
+                <div class="brand-text">
+                    <h1>CampusXplore</h1>
+                    <span>SCET Interactive Virtual Tour</span>
                 </div>
-                <button class="modal-close-btn" id="reviews-close-btn">×</button>
             </div>
 
-            <!-- Review Submission Form -->
-            <form id="form-submit-review" style="margin-top: 14px;">
-                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">YOUR RATING</label>
-                <div class="star-rating-selector" id="star-rating-selector">
-                    <span data-value="1">★</span>
-                    <span data-value="2">★</span>
-                    <span data-value="3">★</span>
-                    <span data-value="4">★</span>
-                    <span data-value="5" class="selected">★</span>
+            <div class="header-center-info">
+                <div class="location-chip">
+                    <span>📍</span>
+                    <span id="current-location-name">Main Administrative Entrance</span>
                 </div>
+                <span class="floor-badge" id="current-floor-badge">Ground Floor</span>
+            </div>
 
-                <div class="auth-form-group">
-                    <label for="review-comment-input">Comments & Observations</label>
-                    <textarea id="review-comment-input" rows="3" placeholder="Add helpful notes, lab equipment details, or directions..." style="background: rgba(0,0,0,0.35); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 10px; color: #fff; font-family: inherit; font-size: 0.88rem; resize: vertical;" required></textarea>
-                </div>
-
-                <button type="submit" class="btn-auth-submit" id="btn-submit-review" style="padding: 10px;">
-                    <span>Submit Note</span>
+            <div class="header-actions">
+                <!-- Audio Voiceover Toggle -->
+                <button class="btn-icon" id="audio-toggle-btn" title="Toggle Voice Narration">
+                    <img src="assets/icons/sound-off.svg" alt="Audio narration toggle">
                 </button>
-            </form>
 
-            <!-- Existing Reviews List -->
-            <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 14px;">
-                <h4 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">Community Notes</h4>
-                <div id="reviews-list-container" style="max-height: 180px; overflow-y: auto;">
-                    <!-- Injected dynamically -->
+                <!-- Bookmarks Drawer Button (Authenticated) -->
+                <button class="btn-icon" id="bookmarks-drawer-btn" title="Saved Locations">
+                    <img src="assets/icons/bookmark.svg" alt="Bookmarks">
+                </button>
+
+                <!-- User Profile Pill (Authenticated) -->
+                <div class="user-profile-pill" id="user-profile-pill">
+                    <div class="user-avatar-circle" id="user-avatar-letter">U</div>
+                    <div class="user-meta-info">
+                        <span class="user-name-text" id="user-display-name">Student</span>
+                        <span class="user-role-badge" id="user-role-text">student</span>
+                    </div>
+                </div>
+
+                <!-- Sign Out Button (Authenticated) -->
+                <button class="btn-icon" id="auth-signout-btn" title="Sign Out">
+                    <img src="assets/icons/user.svg" alt="Sign out" style="filter: opacity(0.85);">
+                </button>
+
+                <!-- Reset Tour -->
+                <button class="btn-icon" id="reset-tour-btn" title="Reset to Entrance">
+                    <img src="assets/icons/reset.svg" alt="Reset">
+                </button>
+            </div>
+        </header>
+
+        <!-- Search & Quick Navigation Bar -->
+        <aside id="scene-search-bar">
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="scene-search-input" placeholder="Search departments, labs, landmarks..." autocomplete="off">
+            </div>
+
+            <div class="category-filter-chips">
+                <button class="filter-chip active" data-category="all">All</button>
+                <button class="filter-chip" data-category="department">Departments</button>
+                <button class="filter-chip" data-category="landmark">Landmarks</button>
+                <button class="filter-chip" data-category="pathway">Paths & Gates</button>
+            </div>
+
+            <div id="scene-dropdown-list">
+                <!-- Populated dynamically by main.js -->
+            </div>
+        </aside>
+
+        <!-- Compass Widget -->
+        <div id="compass-widget" title="Click to align view north">
+            <img id="compass-needle" src="assets/icons/compass.svg" alt="Compass Needle">
+        </div>
+
+        <!-- Interactive Floating 2D Map with Real-Time Radar Cone -->
+        <section id="map-block">
+            <div id="map-header">
+                <div class="map-header-title">
+                    <img src="assets/icons/map.svg" alt="Map icon" style="width: 16px; height: 16px; filter: invert(0.8);">
+                    <span>2D Campus Map</span>
+                </div>
+                <div class="map-controls-group">
+                    <button class="map-btn-tiny" id="map-toggle-minimize" title="Minimize / Expand Map">−</button>
+                </div>
+            </div>
+
+            <div id="map-floor-bar">
+                <button class="floor-tab-btn active" data-floor="all">All Levels</button>
+                <button class="floor-tab-btn" data-floor="Ground Floor">Ground</button>
+                <button class="floor-tab-btn" data-floor="Floor 1">Floor 1</button>
+            </div>
+
+            <div id="map-wrapper">
+                <!-- 2D Floor Plan -->
+                <img src="assets/maps/scet-first-floor.jpg" 
+                     alt="SCET Campus Map" 
+                     id="campusMapImage">
+
+                <!-- Interactive Clickable Pins Layer -->
+                <div id="map-pins-layer"></div>
+
+                <!-- Active User Position Pin with FOV Radar Cone -->
+                <div id="map-pointer">
+                    <div id="map-pointer-ring"></div>
+                    <div id="radar-cone" title="Viewing Orientation FOV"></div>
+                </div>
+            </div>
+
+            <!-- Button to expand map when minimized -->
+            <button class="map-expand-btn" id="map-expand-btn" title="Open Map">
+                <img src="assets/icons/map.svg" alt="Expand map" style="width: 22px; height: 22px; filter: invert(1);">
+            </button>
+        </section>
+
+        <!-- Hotspot Information Modal / Flashcard -->
+        <div id="info-modal" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-title">Location Information</h3>
+                <button class="modal-close-btn" id="modal-close-btn" aria-label="Close dialog">×</button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic info content injected by main.js -->
+            </div>
+        </div>
+
+        <!-- Bookmarks Slide-out Drawer -->
+        <div id="bookmarks-drawer" role="complementary" aria-label="Saved Bookmarks">
+            <div class="drawer-header">
+                <h3><span>🔖</span> Saved Locations</h3>
+                <button class="modal-close-btn" id="bookmarks-close-btn">×</button>
+            </div>
+            <div class="bookmarks-list" id="bookmarks-list-container">
+                <!-- Dynamic bookmarks injected by main.js -->
+            </div>
+        </div>
+
+        <!-- Reviews & Notes Modal -->
+        <div class="modal-backdrop" id="reviews-modal-backdrop" role="dialog" aria-modal="true">
+            <div class="auth-modal-card" style="max-width: 440px;">
+                <div class="modal-header">
+                    <div>
+                        <h3 id="review-scene-title">Campus Spot Notes</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Leave a note or review for this location</span>
+                    </div>
+                    <button class="modal-close-btn" id="reviews-close-btn">×</button>
+                </div>
+
+                <!-- Review Submission Form -->
+                <form id="form-submit-review" style="margin-top: 14px;">
+                    <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">YOUR RATING</label>
+                    <div class="star-rating-selector" id="star-rating-selector">
+                        <span data-value="1">★</span>
+                        <span data-value="2">★</span>
+                        <span data-value="3">★</span>
+                        <span data-value="4">★</span>
+                        <span data-value="5" class="selected">★</span>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label for="review-comment-input">Comments & Observations</label>
+                        <textarea id="review-comment-input" rows="3" placeholder="Add helpful notes, lab equipment details, or directions..." style="background: rgba(0,0,0,0.35); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 10px; color: #fff; font-family: inherit; font-size: 0.88rem; resize: vertical;" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-auth-submit" id="btn-submit-review" style="padding: 10px;">
+                        <span>Submit Note</span>
+                    </button>
+                </form>
+
+                <!-- Existing Reviews List -->
+                <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 14px;">
+                    <h4 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">Community Notes</h4>
+                    <div id="reviews-list-container" style="max-height: 180px; overflow-y: auto;">
+                        <!-- Injected dynamically -->
+                    </div>
                 </div>
             </div>
         </div>

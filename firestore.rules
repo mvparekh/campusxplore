@@ -9,8 +9,12 @@ rules_version = '2';
 // Fields:
 //   - email: string (required, valid email format, 3-100 chars)
 //   - displayName: string (required, 1-100 chars)
-//   - role: string (required, enum: 'student', 'visitor', 'faculty')
-//   - createdAt: timestamp (required, immutable)
+//   - role: string (optional, enum: 'student', 'visitor', 'faculty')
+//   - userType: string (required, enum: 'campus', 'visitor')
+//   - domain: string (required, 1-100 chars)
+//   - createdAt: timestamp (required, immutable on update)
+//   - lastLoginAt: timestamp (required on create/update)
+//   - uid: string (optional, matches request.auth.uid)
 //
 // Collection: bookmarks
 // Document ID: {bookmarkId} (auto-generated)
@@ -99,13 +103,19 @@ service cloud.firestore {
 
     // Domain validator for users/{userId}
     function isValidUser(data) {
-      return hasRequiredFields(data, ['email', 'displayName', 'role', 'createdAt']) &&
-        hasOnlyAllowedFields(data, ['email', 'displayName', 'role', 'createdAt']) &&
+      return hasRequiredFields(data, ['email', 'displayName', 'userType', 'domain', 'createdAt', 'lastLoginAt']) &&
+        hasOnlyAllowedFields(data, ['email', 'displayName', 'role', 'userType', 'domain', 'createdAt', 'lastLoginAt', 'uid']) &&
         isValidEmail(data.email) &&
         isValidString(data.displayName, 1, 100) &&
-        data.role is string &&
-        data.role in ['student', 'visitor', 'faculty'] &&
-        data.createdAt is timestamp;
+        (!('role' in data) || (data.role is string && data.role in ['student', 'visitor', 'faculty'])) &&
+        data.userType is string &&
+        data.userType in ['campus', 'visitor'] &&
+        data.domain is string &&
+        data.domain.size() >= 1 &&
+        data.domain.size() <= 100 &&
+        data.createdAt is timestamp &&
+        data.lastLoginAt is timestamp &&
+        (!('uid' in data) || (data.uid is string && data.uid == request.auth.uid));
     }
 
     // Domain validator for bookmarks/{bookmarkId}
