@@ -4,6 +4,7 @@
  */
 
 import { authManager } from "./auth.js";
+import { preloadAdjacentScenes } from "./preload.js";
 
 document.addEventListener('DOMContentLoaded', async () => {
     let scenesData = {};
@@ -77,6 +78,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modalBody = document.getElementById('modal-body');
     const modalCloseBtn = document.getElementById('modal-close-btn');
 
+    // UI Elements - Glassmorphic Scene Loading Spinner Badge
+    const sceneLoadingBadge = document.getElementById('scene-loading-badge');
+    let sceneLoadingTimer = null;
+
+    function handleSceneLoadStart() {
+        if (sceneLoadingTimer) clearTimeout(sceneLoadingTimer);
+        // Industry-standard UX: only show spinner if uncached texture takes >250ms
+        sceneLoadingTimer = setTimeout(() => {
+            if (sceneLoadingBadge) sceneLoadingBadge.classList.add('visible');
+        }, 250);
+    }
+
+    function handleSceneLoadComplete() {
+        if (sceneLoadingTimer) {
+            clearTimeout(sceneLoadingTimer);
+            sceneLoadingTimer = null;
+        }
+        if (sceneLoadingBadge) sceneLoadingBadge.classList.remove('visible');
+    }
+
     // ========================================================================
     // 1. Fetch Campus Scenes Dataset
     // ========================================================================
@@ -99,8 +120,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             mapSync = new window.MapSync();
 
             viewer.init('panorama', scenesData, startingScene, {
+                onSceneLoadStart: handleSceneLoadStart,
+                onSceneLoadComplete: handleSceneLoadComplete,
                 onSceneChange: (sceneKey, scene) => {
+                    handleSceneLoadComplete();
                     currentActiveSceneKey = sceneKey;
+
+                    // Intelligent Graph Preloader: silently cache connected adjacent panoramas
+                    preloadAdjacentScenes(sceneKey, scenesData);
 
                     // Update Header Chip & Floor
                     if (locationChipText && scene) {
@@ -146,12 +173,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Populate Search / Quick Jump List
             populateDropdownList(scenesData);
+
+            // Immediately preload adjacent nodes for starting scene
+            preloadAdjacentScenes(startingScene, scenesData);
         } else {
+            handleSceneLoadStart();
             viewer.loadScene(startingScene);
         }
     }
 
     function teardownTour() {
+        handleSceneLoadComplete();
         if (viewer) {
             try {
                 viewer.destroy();

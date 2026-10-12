@@ -2,7 +2,7 @@
   "admin": {
     "title": "Administrative Office (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Admin.jpg",
+    "panorama": "assets/panoramas/Admin.webp",
     "mapPos": {
       "t": 64.4,
       "l": 22.7
@@ -45,7 +45,7 @@
   "admin_gate": {
     "title": "Main Administrative Entrance",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Admin_gate.jpg",
+    "panorama": "assets/panoramas/Admin_gate.webp",
     "mapPos": {
       "t": 64.6,
       "l": 14
@@ -75,7 +75,7 @@
   "amphitheatre": {
     "title": "Campus Amphitheatre",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Amphitheatre.jpg",
+    "panorama": "assets/panoramas/Amphitheatre.webp",
     "mapPos": {
       "t": 59.1,
       "l": 44.7
@@ -97,7 +97,7 @@
   "ash_entry": {
     "title": "Applied Science & Humanities Entrance",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Ash_entry.jpg",
+    "panorama": "assets/panoramas/Ash_entry.webp",
     "mapPos": {
       "t": 9,
       "l": 73.2
@@ -118,7 +118,7 @@
   "backroad_admin": {
     "title": "Admin Campus Perimeter",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Backroad_admin.jpg",
+    "panorama": "assets/panoramas/Backroad_admin.webp",
     "mapPos": {
       "t": 55.9,
       "l": 30
@@ -148,7 +148,7 @@
   "canteen_backyard": {
     "title": "Canteen Recreation Area",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Canteen_Backyard.jpg",
+    "panorama": "assets/panoramas/Canteen_Backyard.webp",
     "mapPos": {
       "t": 72,
       "l": 44.8
@@ -170,7 +170,7 @@
   "canteen_entry": {
     "title": "SCET Canteen Entrance",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Canteen_Entry.jpg",
+    "panorama": "assets/panoramas/Canteen_Entry.webp",
     "mapPos": {
       "t": 65.9,
       "l": 45.3
@@ -199,7 +199,7 @@
   "canteen_gate1": {
     "title": "Canteen Gate 1",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Canteen+gate1.jpg",
+    "panorama": "assets/panoramas/Canteen+gate1.webp",
     "mapPos": {
       "t": 65,
       "l": 40
@@ -221,7 +221,7 @@
   "co_ec_road": {
     "title": "Computer & Electronics Corridor",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Co_+_ec_road.jpg",
+    "panorama": "assets/panoramas/Co_+_ec_road.webp",
     "mapPos": {
       "t": 25,
       "l": 30
@@ -250,7 +250,7 @@
   "co_tri_1": {
     "title": "Computer Triangle Plaza (South)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Co_tri_1.jpg",
+    "panorama": "assets/panoramas/Co_tri_1.webp",
     "mapPos": {
       "t": 23.2,
       "l": 27.1
@@ -280,7 +280,7 @@
   "co_tri_2": {
     "title": "Computer Triangle Plaza (North)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Co_tri_2.jpg",
+    "panorama": "assets/panoramas/Co_tri_2.webp",
     "mapPos": {
       "t": 17.6,
       "l": 23.3
@@ -341,7 +341,7 @@
   "dome": {
     "title": "The Iconic Dome",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Dome.jpg",
+    "panorama": "assets/panoramas/Dome.webp",
     "mapPos": {
       "t": 49.2,
       "l": 45.2
@@ -379,7 +379,7 @@
   "dome_archi": {
     "title": "Architecture Block & Dome View",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Dome+archi.jpg",
+    "panorama": "assets/panoramas/Dome+archi.webp",
     "mapPos": {
       "t": 56.3,
       "l": 33.6
@@ -409,7 +409,7 @@
   "gate_1": {
     "title": "Gate 1 - Main Perimeter",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Gate_1_.jpg",
+    "panorama": "assets/panoramas/Gate_1_.webp",
     "mapPos": {
       "t": 9,
       "l": 73.2
@@ -438,7 +438,7 @@
   "hallway2": {
     "title": "Central Connection Hallway",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Hallway2.jpg",
+    "panorama": "assets/panoramas/Hallway2.webp",
     "mapPos": {
       "t": 27.6,
       "l": 46.4
@@ -476,7 +476,7 @@
   "it_tri_1": {
     "title": "Information Technology Triangle 1",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/It_tri1.jpg",
+    "panorama": "assets/panoramas/It_tri1.webp",
     "mapPos": {
       "t": 18.6,
       "l": 68.1
@@ -506,7 +506,7 @@
   "it_tri_2": {
     "title": "Information Technology Triangle 2",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/It_tri2.jpg",
+    "panorama": "assets/panoramas/It_tri2.webp",
     "mapPos": {
       "t": 24.1,
       "l": 64
@@ -551,7 +551,7 @@
   "main_parking": {
     "title": "Student & Faculty Parking Area",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Main_parking.jpg",
+    "panorama": "assets/panoramas/Main_parking.webp",
     "mapPos": {
       "t": 42,
       "l": 80.4
@@ -588,7 +588,7 @@
   "parking_gate_5": {
     "title": "Gate 5 Entrance",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Parking-Gate_5.jpg",
+    "panorama": "assets/panoramas/Parking-Gate_5.webp",
     "mapPos": {
       "t": 10,
       "l": 20
@@ -617,7 +617,7 @@
   "co_inside": {
     "title": "Computer Engineering Dept (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Co_inside.jpg",
+    "panorama": "assets/panoramas/Co_inside.webp",
     "mapPos": {
       "t": 30.7,
       "l": 24.8
@@ -660,7 +660,7 @@
   "civil_inside": {
     "title": "Civil Engineering Dept (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Civil_inside.jpg",
+    "panorama": "assets/panoramas/Civil_inside.webp",
     "mapPos": {
       "t": 56.3,
       "l": 33.6
@@ -703,7 +703,7 @@
   "ec_inside": {
     "title": "EC Engineering Dept (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/EC_inside.jpg",
+    "panorama": "assets/panoramas/EC_inside.webp",
     "mapPos": {
       "t": 20,
       "l": 45.8
@@ -739,7 +739,7 @@
   "electrical_inside": {
     "title": "Electrical Engineering Dept (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/Electrical_inside.jpg",
+    "panorama": "assets/panoramas/Electrical_inside.webp",
     "mapPos": {
       "t": 20.8,
       "l": 33.8
@@ -783,7 +783,7 @@
   "ic_inside": {
     "title": "IC Engineering Dept (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/IC_inside.jpg",
+    "panorama": "assets/panoramas/IC_inside.webp",
     "mapPos": {
       "t": 20.5,
       "l": 58.1
@@ -819,7 +819,7 @@
   "it_1": {
     "title": "Information Technology Dept (Interior)",
     "type": "equirectangular",
-    "panorama": "assets/panoramas/IT-1.jpg",
+    "panorama": "assets/panoramas/IT-1.webp",
     "mapPos": {
       "t": 20.9,
       "l": 65.3

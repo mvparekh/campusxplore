@@ -1461,6 +1461,59 @@ html, body {
     border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
+/* ==========================================================================
+   Glassmorphic 360 Scene Loading Spinner Badge
+   ========================================================================== */
+#scene-loading-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 9999px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 25px rgba(99, 102, 241, 0.35);
+    color: #f8fafc;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+}
 
+#scene-loading-badge.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
 
+.spinner-ring {
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #6366f1;
+    border-right-color: #06b6d4;
+    border-radius: 50%;
+    animation: spin-loader 0.85s linear infinite;
+    flex-shrink: 0;
+}
 
+@keyframes spin-loader {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Hide default plain Pannellum load boxes */
+.pnlm-load-box {
+    display: none !important;
+}

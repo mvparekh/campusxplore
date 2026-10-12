@@ -1,5 +1,6 @@
 /**
  * CampusXplore - 360 Panorama Viewer Controller (Pannellum.js Wrapper)
+ * Supports smooth crossfades, yaw tracking, and load lifecycle hooks.
  */
 
 class PanoramaViewer {
@@ -8,6 +9,8 @@ class PanoramaViewer {
         this.scenes = {};
         this.currentSceneId = null;
         this.onSceneChange = null;
+        this.onSceneLoadStart = null;
+        this.onSceneLoadComplete = null;
         this.onYawChange = null;
         this.onInfoClick = null;
         this.animationFrameId = null;
@@ -19,12 +22,14 @@ class PanoramaViewer {
      * @param {string} containerId DOM ID of viewer container
      * @param {Object} scenesData Complete scenes configuration object
      * @param {string} initialSceneId Starting scene key
-     * @param {Object} callbacks Event callbacks { onSceneChange, onYawChange, onInfoClick }
+     * @param {Object} callbacks Event callbacks { onSceneChange, onSceneLoadStart, onSceneLoadComplete, onYawChange, onInfoClick }
      */
     init(containerId, scenesData, initialSceneId = 'admin_gate', callbacks = {}) {
         this.scenes = scenesData;
         this.currentSceneId = initialSceneId;
         this.onSceneChange = callbacks.onSceneChange || (() => {});
+        this.onSceneLoadStart = callbacks.onSceneLoadStart || (() => {});
+        this.onSceneLoadComplete = callbacks.onSceneLoadComplete || (() => {});
         this.onYawChange = callbacks.onYawChange || (() => {});
         this.onInfoClick = callbacks.onInfoClick || (() => {});
 
@@ -69,7 +74,7 @@ class PanoramaViewer {
             this.viewer = pannellum.viewer(containerId, {
                 default: {
                     firstScene: initialSceneId,
-                    sceneFadeDuration: 800,
+                    sceneFadeDuration: 1000, // Smooth crossfade between panoramas
                     autoLoad: true,
                     showControls: true,
                     compass: false,
@@ -82,10 +87,20 @@ class PanoramaViewer {
                 scenes: pannellumScenes
             });
 
-            // Bind scene load listener
+            // Bind scene change start listener
+            this.viewer.on('scenechange', (sceneId) => {
+                if (this.onSceneLoadStart) {
+                    this.onSceneLoadStart(sceneId);
+                }
+            });
+
+            // Bind scene load completion listener
             this.viewer.on('load', () => {
                 const activeSceneKey = this.viewer.getScene();
                 this.currentSceneId = activeSceneKey;
+                if (this.onSceneLoadComplete) {
+                    this.onSceneLoadComplete(activeSceneKey);
+                }
                 this.onSceneChange(activeSceneKey, this.scenes[activeSceneKey]);
             });
 
@@ -167,6 +182,9 @@ class PanoramaViewer {
             console.warn(`Scene "${sceneId}" not found in scenes dictionary.`);
             return;
         }
+        if (this.onSceneLoadStart) {
+            this.onSceneLoadStart(sceneId);
+        }
         this.viewer.loadScene(sceneId);
     }
 
@@ -191,13 +209,14 @@ class PanoramaViewer {
     destroy() {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
         }
         if (this.viewer) {
             this.viewer.destroy();
+            this.viewer = null;
         }
     }
 }
 
 // Export for module or global use
 window.PanoramaViewer = PanoramaViewer;
-
