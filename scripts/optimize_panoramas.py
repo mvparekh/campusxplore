@@ -98,3 +98,4 @@ def optimize_panoramas():
 
 if __name__ == "__main__":
     optimize_panoramas()
+

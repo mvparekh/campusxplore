@@ -55,3 +55,4 @@ export function preloadAdjacentScenes(currentSceneId, scenesData) {
 }
 
 export default { preloadAdjacentScenes };
+

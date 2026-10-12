@@ -1,6 +1,7 @@
 /**
  * CampusXplore - 360 Panorama Viewer Controller (Pannellum.js Wrapper)
- * Supports smooth crossfades, yaw tracking, and load lifecycle hooks.
+ * Supports smooth crossfades, yaw tracking, load lifecycle hooks,
+ * and robust error boundary with automatic fallback to admin_gate.
  */
 
 class PanoramaViewer {
@@ -8,6 +9,8 @@ class PanoramaViewer {
         this.viewer = null;
         this.scenes = {};
         this.currentSceneId = null;
+        this.attemptedSceneId = null;
+        this.isHandlingError = false;
         this.onSceneChange = null;
         this.onSceneLoadStart = null;
         this.onSceneLoadComplete = null;
@@ -27,6 +30,7 @@ class PanoramaViewer {
     init(containerId, scenesData, initialSceneId = 'admin_gate', callbacks = {}) {
         this.scenes = scenesData;
         this.currentSceneId = initialSceneId;
+        this.attemptedSceneId = initialSceneId;
         this.onSceneChange = callbacks.onSceneChange || (() => {});
         this.onSceneLoadStart = callbacks.onSceneLoadStart || (() => {});
         this.onSceneLoadComplete = callbacks.onSceneLoadComplete || (() => {});
@@ -74,7 +78,7 @@ class PanoramaViewer {
             this.viewer = pannellum.viewer(containerId, {
                 default: {
                     firstScene: initialSceneId,
-                    sceneFadeDuration: 1000, // Smooth crossfade between panoramas
+                    sceneFadeDuration: 800, // Smooth 800ms crossfade between scenes
                     autoLoad: true,
                     showControls: true,
                     compass: false,
@@ -89,6 +93,7 @@ class PanoramaViewer {
 
             // Bind scene change start listener
             this.viewer.on('scenechange', (sceneId) => {
+                this.attemptedSceneId = sceneId;
                 if (this.onSceneLoadStart) {
                     this.onSceneLoadStart(sceneId);
                 }
@@ -98,10 +103,16 @@ class PanoramaViewer {
             this.viewer.on('load', () => {
                 const activeSceneKey = this.viewer.getScene();
                 this.currentSceneId = activeSceneKey;
+                this.attemptedSceneId = activeSceneKey;
                 if (this.onSceneLoadComplete) {
                     this.onSceneLoadComplete(activeSceneKey);
                 }
                 this.onSceneChange(activeSceneKey, this.scenes[activeSceneKey]);
+            });
+
+            // Robust Error Boundary: intercept image or WebGL errors
+            this.viewer.on('error', (err) => {
+                this.handleSceneError(err, this.attemptedSceneId || this.currentSceneId || 'admin_gate');
             });
 
             // Start smooth yaw/pitch tracking loop for radar cone sync
@@ -109,18 +120,54 @@ class PanoramaViewer {
 
         } catch (error) {
             console.error('Failed to initialize Pannellum viewer:', error);
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `
-                    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;background:#0f172a;text-align:center;padding:20px;">
-                        <div>
-                            <h2>WebGL Viewer Initialization Error</h2>
-                            <p style="color:#94a3b8;margin-top:10px;">Your browser or device may not support WebGL, or an asset failed to load.</p>
-                        </div>
-                    </div>
-                `;
-            }
+            this.handleSceneError(error, initialSceneId);
         }
+    }
+
+    /**
+     * Graceful error boundary: shows toast and automatically falls back to entrance
+     */
+    handleSceneError(err, failedSceneId) {
+        console.error(`[Viewer Error Boundary] Failed to load scene "${failedSceneId}":`, err);
+
+        // Prevent infinite error loop if fallback itself has issues
+        if (this.isHandlingError) return;
+        this.isHandlingError = true;
+
+        this.showErrorToast("Scene image loading error — returning to entrance");
+
+        if (this.onSceneLoadComplete) {
+            this.onSceneLoadComplete(failedSceneId);
+        }
+
+        setTimeout(() => {
+            if (failedSceneId !== 'admin_gate') {
+                try {
+                    this.loadScene('admin_gate');
+                } catch (e) {
+                    console.error('[Viewer Error Boundary] Fallback failed:', e);
+                }
+            }
+            this.isHandlingError = false;
+        }, 1500);
+    }
+
+    /**
+     * Toast notification for error boundary feedback
+     */
+    showErrorToast(message = "Scene image loading error — returning to entrance") {
+        let toast = document.getElementById('viewer-error-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'viewer-error-toast';
+            toast.className = 'viewer-error-toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 4000);
     }
 
     /**
@@ -174,18 +221,27 @@ class PanoramaViewer {
     }
 
     /**
-     * Switch to a target scene smoothly
+     * Switch to a target scene smoothly with error boundary protection
      * @param {string} sceneId 
      */
     loadScene(sceneId) {
         if (!this.viewer || !this.scenes[sceneId]) {
             console.warn(`Scene "${sceneId}" not found in scenes dictionary.`);
+            this.handleSceneError(`Scene "${sceneId}" not found`, sceneId);
             return;
         }
+
+        this.attemptedSceneId = sceneId;
+
         if (this.onSceneLoadStart) {
             this.onSceneLoadStart(sceneId);
         }
-        this.viewer.loadScene(sceneId);
+
+        try {
+            this.viewer.loadScene(sceneId);
+        } catch (error) {
+            this.handleSceneError(error, sceneId);
+        }
     }
 
     /**
