@@ -1246,28 +1246,32 @@ html, body {
 }
 
 /* ==========================================================================
-   Full-Screen Gated Login Portal (Mandatory Gated Access)
+   Full-Screen Mandatory Authentication Gateway (#login-gate-screen)
    ========================================================================== */
+#login-gate-screen,
 #gated-auth-overlay {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
     background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    box-sizing: border-box;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
 }
 
+#login-gate-screen.unlocked,
 #gated-auth-overlay.unlocked {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    display: none !important;
 }
 
 .gated-portal-card {
@@ -1396,8 +1400,39 @@ html, body {
     color: #34d399;
 }
 
-/* Tour Interface Locking Rules */
+/* Label row with helper badge */
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.label-row label {
+    margin-bottom: 0 !important;
+}
+
+.domain-helper-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    padding: 2px 8px;
+    border-radius: 12px;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+}
+
+.domain-helper-badge.visitor {
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* Tour Interface Locking Rules (Strict Structural Lock) */
 #tour-app-container {
+    display: none !important;
     position: absolute;
     inset: 0;
     width: 100%;
@@ -1409,9 +1444,23 @@ html, body {
 }
 
 #tour-app-container.unlocked {
+    display: block !important;
     opacity: 1;
     visibility: visible;
 }
+
+.user-role-badge.badge-campus {
+    background: rgba(99, 102, 241, 0.25);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+}
+
+.user-role-badge.badge-visitor {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
 
 
 

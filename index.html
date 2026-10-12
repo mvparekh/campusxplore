@@ -16,53 +16,56 @@
 <body>
 
     <!-- ====================================================================
-         Full-Screen Gated Login Portal (Mandatory Gated Access)
+         Full-Screen Mandatory Authentication Gateway (#login-gate-screen)
          ==================================================================== -->
-    <div id="gated-auth-overlay">
+    <div id="login-gate-screen">
         <div class="gated-portal-card">
-            <div class="gated-brand-badge">🏛️</div>
+            <div class="gated-brand-badge">🎓</div>
             <h1>CampusXplore</h1>
             <p class="subtitle">SCET Virtual Campus — 360° Interactive Tour</p>
 
             <!-- Dual User Type Segmented Selector -->
-            <div class="user-type-selector">
-                <button type="button" class="user-type-btn active" id="type-scet-btn" data-type="campus">
-                    <span class="type-title">🏛️ SCET Member</span>
+            <div class="user-type-selector" role="radiogroup" aria-label="Select User Type">
+                <button type="button" class="user-type-btn active" id="type-scet-btn" data-type="campus" aria-checked="true" role="radio">
+                    <span class="type-title">🎓 SCET Member</span>
                     <span class="type-desc">Student / Faculty</span>
                 </button>
-                <button type="button" class="user-type-btn" id="type-visitor-btn" data-type="visitor">
-                    <span class="type-title">🌍 External Visitor</span>
+                <button type="button" class="user-type-btn" id="type-visitor-btn" data-type="visitor" aria-checked="false" role="radio">
+                    <span class="type-title">🌐 External Visitor</span>
                     <span class="type-desc">Guest / Explorer</span>
                 </button>
             </div>
 
             <!-- Domain Notice Badge -->
             <div class="domain-notice-badge" id="domain-notice-badge">
-                <span>🔒</span>
-                <span id="domain-notice-text">SCET members must use official @scet.ac.in email</span>
+                <span class="badge-icon">🔒</span>
+                <span id="domain-notice-text">Official college domain: <strong>@scet.ac.in</strong></span>
             </div>
 
             <!-- Tabs: Sign In / Create Account -->
             <div class="auth-tabs">
-                <button class="auth-tab-btn active" id="tab-sign-in">Sign In</button>
-                <button class="auth-tab-btn" id="tab-sign-up">Create Account</button>
+                <button type="button" class="auth-tab-btn active" id="tab-sign-in">Sign In</button>
+                <button type="button" class="auth-tab-btn" id="tab-sign-up">Create Account</button>
             </div>
 
             <!-- Inline Error Banner -->
-            <div class="auth-error-banner" id="auth-error-banner"></div>
+            <div class="auth-error-banner" id="auth-error-banner" role="alert"></div>
 
             <!-- Sign In Form -->
             <form id="form-sign-in">
                 <div class="auth-form-group">
-                    <label for="signin-email">Email Address</label>
-                    <input type="email" id="signin-email" placeholder="student@scet.ac.in" required autocomplete="email">
+                    <div class="label-row">
+                        <label for="signin-email">Email Address</label>
+                        <span class="domain-helper-badge" id="signin-domain-badge">@scet.ac.in</span>
+                    </div>
+                    <input type="email" id="signin-email" placeholder="name@scet.ac.in" required autocomplete="email">
                 </div>
                 <div class="auth-form-group">
                     <label for="signin-password">Password</label>
                     <input type="password" id="signin-password" placeholder="••••••••" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn-auth-submit" id="btn-submit-signin">
-                    <span>Enter Virtual Tour</span>
+                    <span>Sign In to Tour</span>
                 </button>
             </form>
 
@@ -73,22 +76,25 @@
                     <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name">
                 </div>
                 <div class="auth-form-group">
-                    <label for="signup-email">Email Address</label>
-                    <input type="email" id="signup-email" placeholder="student@scet.ac.in" required autocomplete="email">
+                    <div class="label-row">
+                        <label for="signup-email">Email Address</label>
+                        <span class="domain-helper-badge" id="signup-domain-badge">@scet.ac.in</span>
+                    </div>
+                    <input type="email" id="signup-email" placeholder="name@scet.ac.in" required autocomplete="email">
                 </div>
                 <div class="auth-form-group">
                     <label for="signup-password">Password</label>
                     <input type="password" id="signup-password" placeholder="Min 6 characters" minlength="6" required autocomplete="new-password">
                 </div>
                 <div class="auth-form-group" id="signup-role-group">
-                    <label for="signup-role">Role</label>
+                    <label for="signup-role">Campus Role</label>
                     <select id="signup-role">
                         <option value="student">Student</option>
                         <option value="faculty">Faculty</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-auth-submit" id="btn-submit-signup">
-                    <span>Register & Access Tour</span>
+                    <span>Create Account & Enter</span>
                 </button>
             </form>
 
@@ -99,15 +105,15 @@
             <!-- Google Sign-In Option -->
             <button type="button" class="btn-google-auth" id="btn-google-auth">
                 <img src="assets/icons/google.svg" alt="Google">
-                <span id="google-auth-btn-text">Sign In with SCET Google Account</span>
+                <span id="google-auth-btn-text">Continue with Google</span>
             </button>
         </div>
     </div>
 
     <!-- ====================================================================
-         Tour Application Container (Gated until authenticated)
+         Tour Application Container (Strictly Hidden until Authenticated)
          ==================================================================== -->
-    <div id="tour-app-container">
+    <div id="tour-app-container" style="display: none;">
         <!-- Main 360 Viewport -->
         <main id="panorama-container">
             <div id="panorama"></div>
@@ -157,7 +163,7 @@
                     <div class="user-avatar-circle" id="user-avatar-letter">U</div>
                     <div class="user-meta-info">
                         <span class="user-name-text" id="user-display-name">Student</span>
-                        <span class="user-role-badge" id="user-role-text">student</span>
+                        <span class="user-role-badge" id="user-role-text">[🎓 SCET Member]</span>
                     </div>
                 </div>
 

@@ -1,6 +1,6 @@
 /**
  * CampusXplore - Main Application Orchestrator
- * Integrates 360 Viewer, 2D Map Sync, Radar Cone, and Firebase Auth / Firestore DB.
+ * Strictly Gated Virtual Tour & 2D Map with SCET Domain Validation
  */
 
 import { authManager } from "./auth.js";
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const resetTourBtn = document.getElementById('reset-tour-btn');
     const compassWidget = document.getElementById('compass-widget');
 
-    // UI Elements - Auth & Profile
+    // UI Elements - Auth & Header Badges
     const authSignoutBtn = document.getElementById('auth-signout-btn');
     const userProfilePill = document.getElementById('user-profile-pill');
     const userAvatarLetter = document.getElementById('user-avatar-letter');
@@ -30,13 +30,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userRoleText = document.getElementById('user-role-text');
     const bookmarksDrawerBtn = document.getElementById('bookmarks-drawer-btn');
 
-    // UI Elements - Gated Portal & Access Control
-    const gatedAuthOverlay = document.getElementById('gated-auth-overlay');
+    // UI Elements - Mandatory Login Gateway Portal
+    const loginGateScreen = document.getElementById('login-gate-screen') || document.getElementById('gated-auth-overlay');
     const tourAppContainer = document.getElementById('tour-app-container');
     const typeScetBtn = document.getElementById('type-scet-btn');
     const typeVisitorBtn = document.getElementById('type-visitor-btn');
     const domainNoticeBadge = document.getElementById('domain-notice-badge');
     const domainNoticeText = document.getElementById('domain-notice-text');
+    const signinDomainBadge = document.getElementById('signin-domain-badge');
+    const signupDomainBadge = document.getElementById('signup-domain-badge');
     const googleAuthBtnText = document.getElementById('google-auth-btn-text');
     const signupRoleGroup = document.getElementById('signup-role-group');
     const signinEmail = document.getElementById('signin-email');
@@ -48,7 +50,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formSignUp = document.getElementById('form-sign-up');
     const btnGoogleAuth = document.getElementById('btn-google-auth');
 
+    // User Type State & Domain Regex
     let selectedUserType = 'campus'; // 'campus' | 'visitor'
+    const scetRegex = /^[a-zA-Z0-9._%+-]+@scet\.ac\.in$/i;
 
     // UI Elements - Bookmarks Drawer
     const bookmarksDrawer = document.getElementById('bookmarks-drawer');
@@ -87,98 +91,141 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ========================================================================
-    // 2. Initialize 360 Viewer & 2D Map Sync
+    // 2. Lazy Tour Initialization & Teardown Controller
     // ========================================================================
-    viewer = new window.PanoramaViewer();
-    mapSync = new window.MapSync();
+    function initTour(startingScene = 'admin_gate') {
+        if (!viewer) {
+            viewer = new window.PanoramaViewer();
+            mapSync = new window.MapSync();
 
-    viewer.init('panorama', scenesData, 'admin_gate', {
-        onSceneChange: (sceneKey, scene) => {
-            currentActiveSceneKey = sceneKey;
+            viewer.init('panorama', scenesData, startingScene, {
+                onSceneChange: (sceneKey, scene) => {
+                    currentActiveSceneKey = sceneKey;
 
-            // Update Header Chip & Floor
-            if (locationChipText && scene) {
-                locationChipText.textContent = scene.title || 'Campus Location';
-            }
-            if (floorBadgeText && scene) {
-                floorBadgeText.textContent = scene.floor || 'Ground Floor';
-            }
+                    // Update Header Chip & Floor
+                    if (locationChipText && scene) {
+                        locationChipText.textContent = scene.title || 'Campus Location';
+                    }
+                    if (floorBadgeText && scene) {
+                        floorBadgeText.textContent = scene.floor || 'Ground Floor';
+                    }
 
-            // Sync 2D Map Marker & Active Radar Anchor
-            mapSync.onSceneChanged(sceneKey, scene);
+                    // Sync 2D Map Marker & Active Radar Anchor
+                    mapSync.onSceneChanged(sceneKey, scene);
 
-            // Update Quick Jump Active Item in Search
-            updateDropdownActive(sceneKey);
+                    // Update Quick Jump Active Item in Search
+                    updateDropdownActive(sceneKey);
 
-            // Update Bookmark Button Status for Active Scene
-            updateBookmarkButtonState(sceneKey);
+                    // Update Bookmark Button Status for Active Scene
+                    updateBookmarkButtonState(sceneKey);
 
-            // Telemetry: Log Scene Visit
-            authManager.logVisit(sceneKey);
+                    // Telemetry: Log Scene Visit
+                    authManager.logVisit(sceneKey);
 
-            // Optional Voiceover (only if user explicitly activated sound)
-            if (audioNarrationEnabled && 'speechSynthesis' in window && scene) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(`Now exploring ${scene.title}`);
-                utterance.rate = 1.0;
-                window.speechSynthesis.speak(utterance);
-            }
-        },
+                    // Optional Voiceover
+                    if (audioNarrationEnabled && 'speechSynthesis' in window && scene) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(`Now exploring ${scene.title}`);
+                        utterance.rate = 1.0;
+                        window.speechSynthesis.speak(utterance);
+                    }
+                },
 
-        onYawChange: (orientation) => {
-            // Real-Time Radar Cone Rotation & Compass Sync
-            mapSync.onOrientationUpdate(orientation);
-        },
+                onYawChange: (orientation) => {
+                    // Real-Time Radar Cone Rotation & Compass Sync
+                    mapSync.onOrientationUpdate(orientation);
+                },
 
-        onInfoClick: (infoData) => {
-            showInfoModal(infoData.title, infoData.desc);
+                onInfoClick: (infoData) => {
+                    showInfoModal(infoData.title, infoData.desc);
+                }
+            });
+
+            // Initialize 2D Map Sync Pins
+            mapSync.init(scenesData, viewer);
+
+            // Populate Search / Quick Jump List
+            populateDropdownList(scenesData);
+        } else {
+            viewer.loadScene(startingScene);
         }
-    });
+    }
 
-    // Initialize 2D Map Sync Pins
-    mapSync.init(scenesData, viewer);
+    function teardownTour() {
+        if (viewer) {
+            try {
+                viewer.destroy();
+            } catch (e) {
+                console.warn('[CampusXplore] Error tearing down viewer:', e);
+            }
+            viewer = null;
+        }
+        mapSync = null;
 
-    // Populate Search / Quick Jump List
-    populateDropdownList(scenesData);
+        // Purge Pannellum DOM to ensure WebGL context and assets are freed
+        const panEl = document.getElementById('panorama');
+        if (panEl) panEl.innerHTML = '';
+    }
 
     // ========================================================================
-    // 3. Auth State Observer & Gated Access Synchronization
+    // 3. Auth State Observer & Strict Access Gateway
     // ========================================================================
     authManager.initAuth((user) => {
         if (user) {
-            // Unlock Virtual Tour Viewport & Controls
-            if (gatedAuthOverlay) gatedAuthOverlay.classList.add('unlocked');
-            if (tourAppContainer) tourAppContainer.classList.add('unlocked');
+            // Reveal Tour UI & Hide Login Gateway
+            if (loginGateScreen) {
+                loginGateScreen.classList.add('unlocked');
+            }
+            if (tourAppContainer) {
+                tourAppContainer.style.display = 'block';
+                tourAppContainer.classList.add('unlocked');
+            }
 
-            // Authenticated Header Elements
+            // Configure Header User Info and Badge
             if (userProfilePill) userProfilePill.style.display = 'flex';
             if (authSignoutBtn) authSignoutBtn.style.display = 'flex';
             if (bookmarksDrawerBtn) bookmarksDrawerBtn.style.display = 'flex';
 
             const name = user.displayName || user.email.split('@')[0];
             if (userDisplayName) userDisplayName.textContent = name;
-            if (userRoleText) {
-                userRoleText.textContent = user.userType === 'campus'
-                    ? (user.role || 'campus')
-                    : 'visitor';
-            }
             if (userAvatarLetter) userAvatarLetter.textContent = name.charAt(0).toUpperCase();
 
-            // Refresh Bookmarks
+            if (userRoleText) {
+                if (user.userType === 'campus') {
+                    userRoleText.textContent = '[🎓 SCET Member]';
+                    userRoleText.className = 'user-role-badge badge-campus';
+                } else {
+                    userRoleText.textContent = '[🌐 Visitor]';
+                    userRoleText.className = 'user-role-badge badge-visitor';
+                }
+            }
+
+            // Initialize Pannellum & Minimap only NOW!
+            initTour(currentActiveSceneKey || 'admin_gate');
+
+            // Refresh Bookmarks for active scene
             updateBookmarkButtonState(currentActiveSceneKey);
             loadBookmarksDrawer();
         } else {
-            // Locked Gated Access: Show Login Screen, Hide Tour
-            if (gatedAuthOverlay) gatedAuthOverlay.classList.remove('unlocked');
-            if (tourAppContainer) tourAppContainer.classList.remove('unlocked');
+            // Teardown Tour instance & purge WebGL
+            teardownTour();
 
+            // Hide Tour UI completely
+            if (tourAppContainer) {
+                tourAppContainer.classList.remove('unlocked');
+                tourAppContainer.style.display = 'none';
+            }
             if (userProfilePill) userProfilePill.style.display = 'none';
             if (authSignoutBtn) authSignoutBtn.style.display = 'none';
             if (bookmarksDrawerBtn) bookmarksDrawerBtn.style.display = 'none';
             if (bookmarksDrawer) bookmarksDrawer.classList.remove('active');
             if (reviewsModalBackdrop) reviewsModalBackdrop.classList.remove('active');
 
-            updateBookmarkButtonState(currentActiveSceneKey);
+            // Re-display full-screen Login Gateway
+            if (loginGateScreen) {
+                loginGateScreen.classList.remove('unlocked');
+                loginGateScreen.style.display = 'flex';
+            }
         }
     });
 
@@ -255,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Click to load scene
             card.addEventListener('click', (e) => {
                 if (e.target.classList.contains('bookmark-delete-btn')) return;
-                viewer.loadScene(bm.sceneId);
+                if (viewer) viewer.loadScene(bm.sceneId);
                 bookmarksDrawer.classList.remove('active');
             });
 
@@ -365,7 +412,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ========================================================================
-    // 5. Gated Auth Portal & Domain Validation Event Handlers
+    // 5. Gated Auth Portal & Strict SCET Email Validation
     // ========================================================================
     function showAuthError(message = "") {
         if (!authErrorBanner) return;
@@ -378,8 +425,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function showAuthModal(message = "") {
-        if (gatedAuthOverlay) gatedAuthOverlay.classList.remove('unlocked');
-        if (tourAppContainer) tourAppContainer.classList.remove('unlocked');
+        if (loginGateScreen) loginGateScreen.classList.remove('unlocked');
+        if (tourAppContainer) {
+            tourAppContainer.classList.remove('unlocked');
+            tourAppContainer.style.display = 'none';
+        }
         showAuthError(message);
     }
 
@@ -389,23 +439,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         showAuthError('');
 
         if (type === 'campus') {
-            if (typeScetBtn) typeScetBtn.classList.add('active');
-            if (typeVisitorBtn) typeVisitorBtn.classList.remove('active');
+            if (typeScetBtn) {
+                typeScetBtn.classList.add('active');
+                typeScetBtn.setAttribute('aria-checked', 'true');
+            }
+            if (typeVisitorBtn) {
+                typeVisitorBtn.classList.remove('active');
+                typeVisitorBtn.setAttribute('aria-checked', 'false');
+            }
             if (domainNoticeBadge) domainNoticeBadge.classList.remove('visitor');
-            if (domainNoticeText) domainNoticeText.textContent = 'SCET members must use official @scet.ac.in email';
-            if (signinEmail) signinEmail.placeholder = 'student@scet.ac.in';
-            if (signupEmail) signupEmail.placeholder = 'student@scet.ac.in';
+            if (domainNoticeText) domainNoticeText.innerHTML = 'Official college domain: <strong>@scet.ac.in</strong>';
+            if (signinDomainBadge) {
+                signinDomainBadge.textContent = '@scet.ac.in';
+                signinDomainBadge.classList.remove('visitor');
+            }
+            if (signupDomainBadge) {
+                signupDomainBadge.textContent = '@scet.ac.in';
+                signupDomainBadge.classList.remove('visitor');
+            }
+            if (signinEmail) signinEmail.placeholder = 'name@scet.ac.in';
+            if (signupEmail) signupEmail.placeholder = 'name@scet.ac.in';
             if (signupRoleGroup) signupRoleGroup.style.display = 'block';
-            if (googleAuthBtnText) googleAuthBtnText.textContent = 'Sign In with SCET Google Account';
+            if (googleAuthBtnText) googleAuthBtnText.textContent = 'Continue with SCET Google Account';
         } else {
-            if (typeVisitorBtn) typeVisitorBtn.classList.add('active');
-            if (typeScetBtn) typeScetBtn.classList.remove('active');
+            if (typeVisitorBtn) {
+                typeVisitorBtn.classList.add('active');
+                typeVisitorBtn.setAttribute('aria-checked', 'true');
+            }
+            if (typeScetBtn) {
+                typeScetBtn.classList.remove('active');
+                typeScetBtn.setAttribute('aria-checked', 'false');
+            }
             if (domainNoticeBadge) domainNoticeBadge.classList.add('visitor');
-            if (domainNoticeText) domainNoticeText.textContent = 'Visitors and guests can use any valid email address';
-            if (signinEmail) signinEmail.placeholder = 'visitor@gmail.com';
-            if (signupEmail) signupEmail.placeholder = 'visitor@gmail.com';
+            if (domainNoticeText) domainNoticeText.innerHTML = 'Open Access: <strong>Any Email Provider</strong>';
+            if (signinDomainBadge) {
+                signinDomainBadge.textContent = 'Any Email';
+                signinDomainBadge.classList.add('visitor');
+            }
+            if (signupDomainBadge) {
+                signupDomainBadge.textContent = 'Any Email';
+                signupDomainBadge.classList.add('visitor');
+            }
+            if (signinEmail) signinEmail.placeholder = 'name@gmail.com';
+            if (signupEmail) signupEmail.placeholder = 'name@gmail.com';
             if (signupRoleGroup) signupRoleGroup.style.display = 'none';
-            if (googleAuthBtnText) googleAuthBtnText.textContent = 'Sign In with Google';
+            if (googleAuthBtnText) googleAuthBtnText.textContent = 'Continue with Google';
         }
     }
 
@@ -438,7 +516,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Sign In Submit with Strict Domain Validation
+    // Sign In Submit with Strict Regex Domain Validation
     if (formSignIn) {
         formSignIn.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -446,9 +524,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const password = document.getElementById('signin-password').value;
             const submitBtn = document.getElementById('btn-submit-signin');
 
-            // Strict Domain Rule Check
-            if (selectedUserType === 'campus' && !email.toLowerCase().endsWith('@scet.ac.in')) {
-                showAuthError("SCET campus members must use their official @scet.ac.in email address.");
+            // Strict SCET Regex Check
+            if (selectedUserType === 'campus' && !scetRegex.test(email)) {
+                showAuthError("SCET Members must use their official @scet.ac.in college email ID.");
                 return;
             }
 
@@ -458,7 +536,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const result = await authManager.signInWithEmail(email, password, selectedUserType);
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Enter Virtual Tour</span>';
+            submitBtn.innerHTML = '<span>Sign In to Tour</span>';
 
             if (result.success) {
                 formSignIn.reset();
@@ -468,7 +546,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Sign Up Submit with Strict Domain Validation
+    // Sign Up Submit with Strict Regex Domain Validation
     if (formSignUp) {
         formSignUp.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -479,9 +557,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const role = selectedUserType === 'campus' ? (roleSelect ? roleSelect.value : 'student') : 'visitor';
             const submitBtn = document.getElementById('btn-submit-signup');
 
-            // Strict Domain Rule Check
-            if (selectedUserType === 'campus' && !email.toLowerCase().endsWith('@scet.ac.in')) {
-                showAuthError("SCET campus members must use their official @scet.ac.in email address.");
+            // Strict SCET Regex Check
+            if (selectedUserType === 'campus' && !scetRegex.test(email)) {
+                showAuthError("SCET Members must use their official @scet.ac.in college email ID.");
                 return;
             }
 
@@ -491,7 +569,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const result = await authManager.signUpWithEmail(email, password, name, selectedUserType, role);
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Register & Access Tour</span>';
+            submitBtn.innerHTML = '<span>Create Account & Enter</span>';
 
             if (result.success) {
                 formSignUp.reset();
@@ -532,7 +610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
 
             btn.addEventListener('click', () => {
-                viewer.loadScene(key);
+                if (viewer) viewer.loadScene(key);
             });
 
             dropdownList.appendChild(btn);
@@ -567,7 +645,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             filterChips.forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
             const category = chip.dataset.category;
-            mapSync.setCategoryFilter(category);
+            if (mapSync) mapSync.setCategoryFilter(category);
 
             const items = document.querySelectorAll('.scene-item-btn');
             items.forEach(btn => {
@@ -583,14 +661,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Reset Tour
     if (resetTourBtn) {
         resetTourBtn.addEventListener('click', () => {
-            viewer.loadScene('admin_gate');
+            if (viewer) viewer.loadScene('admin_gate');
         });
     }
 
     // Compass Alignment
     if (compassWidget) {
         compassWidget.addEventListener('click', () => {
-            viewer.resetOrientation();
+            if (viewer) viewer.resetOrientation();
         });
     }
 

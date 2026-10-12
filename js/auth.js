@@ -118,13 +118,14 @@ class AuthManager {
      */
     async signUpWithEmail(email, password, displayName, userType = 'campus', role = 'student') {
         const emailLower = (email || '').trim().toLowerCase();
-        const isScetEmail = emailLower.endsWith('@scet.ac.in');
+        const scetRegex = /^[a-zA-Z0-9._%+-]+@scet\.ac\.in$/i;
+        const isScetEmail = scetRegex.test(emailLower);
 
         // Strict Domain Check
         if (userType === 'campus' && !isScetEmail) {
             return {
                 success: false,
-                error: "SCET campus members must use their official @scet.ac.in email address."
+                error: "SCET Members must use their official @scet.ac.in college email ID."
             };
         }
 
@@ -194,13 +195,14 @@ class AuthManager {
      */
     async signInWithEmail(email, password, userType = 'campus') {
         const emailLower = (email || '').trim().toLowerCase();
-        const isScetEmail = emailLower.endsWith('@scet.ac.in');
+        const scetRegex = /^[a-zA-Z0-9._%+-]+@scet\.ac\.in$/i;
+        const isScetEmail = scetRegex.test(emailLower);
 
         // Strict Domain Check
         if (userType === 'campus' && !isScetEmail) {
             return {
                 success: false,
-                error: "SCET campus members must use their official @scet.ac.in email address."
+                error: "SCET Members must use their official @scet.ac.in college email ID."
             };
         }
 
@@ -253,13 +255,14 @@ class AuthManager {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
                 const emailLower = (user.email || '').trim().toLowerCase();
-                const isScetEmail = emailLower.endsWith('@scet.ac.in');
+                const scetRegex = /^[a-zA-Z0-9._%+-]+@scet\.ac\.in$/i;
+                const isScetEmail = scetRegex.test(emailLower);
 
                 if (userType === 'campus' && !isScetEmail) {
                     await signOut(auth);
                     return {
                         success: false,
-                        error: "SCET campus members must use their official @scet.ac.in email address."
+                        error: "SCET Members must use their official @scet.ac.in college email ID."
                     };
                 }
 
