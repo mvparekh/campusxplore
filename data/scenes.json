@@ -1,0 +1,855 @@
+{
+  "admin": {
+    "title": "Administrative Office (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Admin.jpg",
+    "mapPos": {
+      "t": 64.4,
+      "l": 22.7
+    },
+    "hotSpots": [
+      {
+        "pitch": -3.2687,
+        "yaw": 10.7184,
+        "type": "scene",
+        "text": "Exit to Main Campus",
+        "sceneId": "backroad_admin",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -4.4188,
+        "yaw": -74.2116,
+        "cssClass": "info-hotspot",
+        "infoTitle": "NJ Hall Path",
+        "infoDesc": "A shortcut path leading toward the NJ Hall complex."
+      },
+      {
+        "pitch": 28.9244,
+        "yaw": 6.1454,
+        "cssClass": "info-hotspot",
+        "infoTitle": "NJ Seminar Hall",
+        "infoDesc": "The college's primary venue for seminars, workshops, and guest lectures."
+      },
+      {
+        "pitch": -2.5966,
+        "yaw": 74.718,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Admin Front Desk",
+        "infoDesc": "The central hub for student inquiries and administrative services."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "admin_gate": {
+    "title": "Main Administrative Entrance",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Admin_gate.jpg",
+    "mapPos": {
+      "t": 64.6,
+      "l": 14
+    },
+    "hotSpots": [
+      {
+        "pitch": 0.0728,
+        "yaw": 11.6601,
+        "type": "scene",
+        "text": "Route to Canteen",
+        "sceneId": "canteen_entry",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 1.3995,
+        "yaw": -34.0651,
+        "type": "scene",
+        "text": "To Admin Office",
+        "sceneId": "admin",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "amphitheatre": {
+    "title": "Campus Amphitheatre",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Amphitheatre.jpg",
+    "mapPos": {
+      "t": 59.1,
+      "l": 44.7
+    },
+    "hotSpots": [
+      {
+        "pitch": 0,
+        "yaw": 0,
+        "type": "scene",
+        "text": "Go to Dome",
+        "sceneId": "dome",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "ash_entry": {
+    "title": "Applied Science & Humanities Entrance",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Ash_entry.jpg",
+    "mapPos": {
+      "t": 9,
+      "l": 73.2
+    },
+    "hotSpots": [
+      {
+        "pitch": 36.0726,
+        "yaw": -72.5793,
+        "cssClass": "info-hotspot",
+        "infoTitle": "ASH Department",
+        "infoDesc": "Entry to the Department of Applied Science and Humanities, primarily for first-year students."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "backroad_admin": {
+    "title": "Admin Campus Perimeter",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Backroad_admin.jpg",
+    "mapPos": {
+      "t": 55.9,
+      "l": 30
+    },
+    "hotSpots": [
+      {
+        "pitch": -0.9992,
+        "yaw": -94.721,
+        "type": "scene",
+        "text": "Hallway 1 (CO Tri 1)",
+        "sceneId": "co_tri_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -7.7717,
+        "yaw": -50.4425,
+        "type": "scene",
+        "text": "Archi + Dome",
+        "sceneId": "dome_archi",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "canteen_backyard": {
+    "title": "Canteen Recreation Area",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Canteen_Backyard.jpg",
+    "mapPos": {
+      "t": 72,
+      "l": 44.8
+    },
+    "hotSpots": [
+      {
+        "pitch": -2.4221,
+        "yaw": 60.2131,
+        "type": "scene",
+        "text": "Dome",
+        "sceneId": "dome",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "canteen_entry": {
+    "title": "SCET Canteen Entrance",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Canteen_Entry.jpg",
+    "mapPos": {
+      "t": 65.9,
+      "l": 45.3
+    },
+    "hotSpots": [
+      {
+        "pitch": -3.3575,
+        "yaw": -28.3037,
+        "type": "scene",
+        "text": "Backyard",
+        "sceneId": "canteen_backyard",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.54,
+        "yaw": -16.4901,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Dining Hall",
+        "infoDesc": "Spacious cafeteria serving various cuisines for students and staff."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "canteen_gate1": {
+    "title": "Canteen Gate 1",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Canteen+gate1.jpg",
+    "mapPos": {
+      "t": 65,
+      "l": 40
+    },
+    "hotSpots": [
+      {
+        "pitch": -0.5025,
+        "yaw": -17.0818,
+        "type": "scene",
+        "text": "Admin Gate",
+        "sceneId": "admin_gate",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "co_ec_road": {
+    "title": "Computer & Electronics Corridor",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Co_+_ec_road.jpg",
+    "mapPos": {
+      "t": 25,
+      "l": 30
+    },
+    "hotSpots": [
+      {
+        "pitch": -11.0606,
+        "yaw": 106.6761,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Central Library",
+        "infoDesc": "A vast collection of academic journals, books, and digital resources."
+      },
+      {
+        "pitch": 5.6434,
+        "yaw": -32.9413,
+        "type": "scene",
+        "text": "Enter CO Dept",
+        "sceneId": "co_inside",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "co_tri_1": {
+    "title": "Computer Triangle Plaza (South)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Co_tri_1.jpg",
+    "mapPos": {
+      "t": 23.2,
+      "l": 27.1
+    },
+    "hotSpots": [
+      {
+        "pitch": -3.5899,
+        "yaw": -47.1926,
+        "type": "scene",
+        "text": "Towards CO Tri 2",
+        "sceneId": "co_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.9298,
+        "yaw": 29.0743,
+        "type": "scene",
+        "text": "Hallway 2",
+        "sceneId": "hallway2",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "co_tri_2": {
+    "title": "Computer Triangle Plaza (North)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Co_tri_2.jpg",
+    "mapPos": {
+      "t": 17.6,
+      "l": 23.3
+    },
+    "hotSpots": [
+      {
+        "pitch": -9.9606,
+        "yaw": 1.527,
+        "type": "scene",
+        "text": "Parking Gate 5",
+        "sceneId": "parking_gate_5",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -6.8818,
+        "yaw": 149.7218,
+        "type": "scene",
+        "text": "Ladder to CO Dept",
+        "sceneId": "co_inside",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 2.6412,
+        "yaw": -162.3097,
+        "type": "scene",
+        "text": "Civil Engineering Dept",
+        "sceneId": "civil_inside",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 8.7747,
+        "yaw": 74.1306,
+        "type": "scene",
+        "text": "Electrical Dept",
+        "sceneId": "electrical_inside",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -14.417197439463202,
+        "yaw": 116.8245773968799,
+        "type": "scene",
+        "text": "Hallway 2",
+        "sceneId": "hallway2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 1.2643,
+        "yaw": -146.8331,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Student Amenities",
+        "infoDesc": "Xerox, printing, and stationery services available here."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "dome": {
+    "title": "The Iconic Dome",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Dome.jpg",
+    "mapPos": {
+      "t": 49.2,
+      "l": 45.2
+    },
+    "hotSpots": [
+      {
+        "pitch": -1.2632,
+        "yaw": -143.9302,
+        "type": "scene",
+        "text": "Towards CO Tri 1",
+        "sceneId": "co_tri_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -1.2147,
+        "yaw": -34.1426,
+        "type": "scene",
+        "text": "Towards IT Tri 1",
+        "sceneId": "it_tri_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.4175,
+        "yaw": 82.4577,
+        "type": "scene",
+        "text": "Amphitheatre",
+        "sceneId": "amphitheatre",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "dome_archi": {
+    "title": "Architecture Block & Dome View",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Dome+archi.jpg",
+    "mapPos": {
+      "t": 56.3,
+      "l": 33.6
+    },
+    "hotSpots": [
+      {
+        "pitch": 1.049,
+        "yaw": 56.008,
+        "type": "scene",
+        "text": "Dome",
+        "sceneId": "dome",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 3.7137,
+        "yaw": -120.4849,
+        "type": "scene",
+        "text": "Architecture Dept",
+        "sceneId": "civil_inside",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "gate_1": {
+    "title": "Gate 1 - Main Perimeter",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Gate_1_.jpg",
+    "mapPos": {
+      "t": 9,
+      "l": 73.2
+    },
+    "hotSpots": [
+      {
+        "pitch": 1.2218,
+        "yaw": -39.3355,
+        "type": "scene",
+        "text": "Towards IT Tri 1",
+        "sceneId": "it_tri_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -1.8872,
+        "yaw": -121.6766,
+        "cssClass": "info-hotspot",
+        "infoTitle": "ASH Entry Point",
+        "infoDesc": "Northern entrance providing quick access to the ASH Building."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "hallway2": {
+    "title": "Central Connection Hallway",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Hallway2.jpg",
+    "mapPos": {
+      "t": 27.6,
+      "l": 46.4
+    },
+    "hotSpots": [
+      {
+        "pitch": -11.215,
+        "yaw": -22.146,
+        "type": "scene",
+        "text": "Towards IT Triangle",
+        "sceneId": "it_tri_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -5.1251,
+        "yaw": -169.9293,
+        "type": "scene",
+        "text": "CO Tri 1",
+        "sceneId": "co_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -20.1376,
+        "yaw": 51.6421,
+        "type": "scene",
+        "text": "Towards Dome",
+        "sceneId": "dome",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "it_tri_1": {
+    "title": "Information Technology Triangle 1",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/It_tri1.jpg",
+    "mapPos": {
+      "t": 18.6,
+      "l": 68.1
+    },
+    "hotSpots": [
+      {
+        "pitch": -147.4198,
+        "yaw": 3.5515,
+        "type": "scene",
+        "text": "Towards IT Triangle 2",
+        "sceneId": "it_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 3.5515,
+        "yaw": -147.4198,
+        "type": "scene",
+        "text": "Towards Hallway 3",
+        "sceneId": "hallway2",
+        "cssClass": "scene-hotspot"
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "it_tri_2": {
+    "title": "Information Technology Triangle 2",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/It_tri2.jpg",
+    "mapPos": {
+      "t": 24.1,
+      "l": 64
+    },
+    "hotSpots": [
+      {
+        "pitch": 0.7251,
+        "yaw": 72.2246,
+        "type": "scene",
+        "text": "Parking",
+        "sceneId": "main_parking",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.4858,
+        "yaw": -30.3955,
+        "type": "scene",
+        "text": "Ladder to IT Dept",
+        "sceneId": "it_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.4256,
+        "yaw": 13.6902,
+        "type": "scene",
+        "text": "Enter IC Dept",
+        "sceneId": "ic_inside",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 8.6345,
+        "yaw": -110.5841,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Chemical Engineering",
+        "infoDesc": "The dedicated facility for Chemical Engineering labs and research."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "pathway",
+    "block": "Corridors & Plazas"
+  },
+  "main_parking": {
+    "title": "Student & Faculty Parking Area",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Main_parking.jpg",
+    "mapPos": {
+      "t": 42,
+      "l": 80.4
+    },
+    "hotSpots": [
+      {
+        "pitch": 0.7634,
+        "yaw": 41.5878,
+        "type": "scene",
+        "text": "Gate 1",
+        "sceneId": "gate_1",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.9619,
+        "yaw": 137.0694,
+        "type": "scene",
+        "text": "IT Triangle 2",
+        "sceneId": "it_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.204,
+        "yaw": 147.0522,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Academic Block View",
+        "infoDesc": "A clear perspective of the IT and Mechanical Engineering buildings."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "parking_gate_5": {
+    "title": "Gate 5 Entrance",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Parking-Gate_5.jpg",
+    "mapPos": {
+      "t": 10,
+      "l": 20
+    },
+    "hotSpots": [
+      {
+        "pitch": -0.4151,
+        "yaw": -124.0584,
+        "type": "scene",
+        "text": "Back to CO Tri 2",
+        "sceneId": "co_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.7713,
+        "yaw": -18.5389,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Gate 5",
+        "infoDesc": "The secondary exit and parking entrance of the campus."
+      }
+    ],
+    "floor": "Ground Floor",
+    "category": "landmark",
+    "block": "Campus Central"
+  },
+  "co_inside": {
+    "title": "Computer Engineering Dept (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Co_inside.jpg",
+    "mapPos": {
+      "t": 30.7,
+      "l": 24.8
+    },
+    "hotSpots": [
+      {
+        "pitch": -4.6332,
+        "yaw": -73.6161,
+        "type": "scene",
+        "text": "Exit to CO Triangle",
+        "sceneId": "co_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.1862,
+        "yaw": -7.2831,
+        "cssClass": "info-hotspot",
+        "infoTitle": "High-Performance Labs",
+        "infoDesc": "Equipped with state-of-the-art computing systems for Phase 1 to 3 labs."
+      },
+      {
+        "pitch": 2.4388,
+        "yaw": 90.1847,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Faculty Workspace",
+        "infoDesc": "The main department staffroom for professors and researchers."
+      },
+      {
+        "pitch": 4.2647,
+        "yaw": -178.38,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Artificial Intelligence Lab",
+        "infoDesc": "A specialized research facility dedicated to AI and Machine Learning."
+      }
+    ],
+    "floor": "Floor 1",
+    "category": "department",
+    "block": "Academic Wing"
+  },
+  "civil_inside": {
+    "title": "Civil Engineering Dept (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Civil_inside.jpg",
+    "mapPos": {
+      "t": 56.3,
+      "l": 33.6
+    },
+    "hotSpots": [
+      {
+        "pitch": -3.6571,
+        "yaw": 150.7602,
+        "type": "scene",
+        "text": "Exit to Campus",
+        "sceneId": "co_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -5.3018,
+        "yaw": -37.4426,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Lecture Hall",
+        "infoDesc": "Equipped with modern audiovisual tools for theoretical instruction."
+      },
+      {
+        "pitch": -2.1566,
+        "yaw": -60.5529,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Surveying Lab",
+        "infoDesc": "Laboratory for land measurement and structural engineering practicals."
+      },
+      {
+        "pitch": 4.8846,
+        "yaw": 177.1917,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Main Department Hall",
+        "infoDesc": "The central interior corridor of the Civil Engineering wing."
+      }
+    ],
+    "floor": "Floor 1",
+    "category": "department",
+    "block": "Academic Wing"
+  },
+  "ec_inside": {
+    "title": "EC Engineering Dept (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/EC_inside.jpg",
+    "mapPos": {
+      "t": 20,
+      "l": 45.8
+    },
+    "hotSpots": [
+      {
+        "pitch": -2.2728,
+        "yaw": -168.6932,
+        "type": "scene",
+        "text": "Exit to Electrical Dept",
+        "sceneId": "electrical_inside",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 8.6934,
+        "yaw": -27.9953,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Classroom F-02",
+        "infoDesc": "Electronics Batch Classroom for senior undergraduate students."
+      },
+      {
+        "pitch": 6.766,
+        "yaw": -99.7432,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Room F-03",
+        "infoDesc": "Advanced Electronics Design and Microprocessor Laboratory."
+      }
+    ],
+    "floor": "Floor 1",
+    "category": "department",
+    "block": "Academic Wing"
+  },
+  "electrical_inside": {
+    "title": "Electrical Engineering Dept (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/Electrical_inside.jpg",
+    "mapPos": {
+      "t": 20.8,
+      "l": 33.8
+    },
+    "hotSpots": [
+      {
+        "pitch": -2.7333,
+        "yaw": 26.2168,
+        "type": "scene",
+        "text": "Exit to Campus",
+        "sceneId": "co_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.3769,
+        "yaw": -142.2502,
+        "type": "scene",
+        "text": "Towards EC Dept",
+        "sceneId": "ec_inside",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": 1.3827,
+        "yaw": 15.9041,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Power Electronics Lab",
+        "infoDesc": "Laboratory dedicated to high-voltage testing and power systems."
+      },
+      {
+        "pitch": 0.8801,
+        "yaw": 21.0091,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Circuits Lab",
+        "infoDesc": "Laboratory for basic electrical circuit analysis and design."
+      }
+    ],
+    "floor": "Floor 1",
+    "category": "department",
+    "block": "Academic Wing"
+  },
+  "ic_inside": {
+    "title": "IC Engineering Dept (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/IC_inside.jpg",
+    "mapPos": {
+      "t": 20.5,
+      "l": 58.1
+    },
+    "hotSpots": [
+      {
+        "pitch": -0.486,
+        "yaw": 128.9744,
+        "type": "scene",
+        "text": "Exit to IT Triangle",
+        "sceneId": "it_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -0.6889,
+        "yaw": -26.2113,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Control Systems Lab",
+        "infoDesc": "Facility for studying automated control loops and process dynamics."
+      },
+      {
+        "pitch": -18.1492,
+        "yaw": 41.7518,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Process Control Lab",
+        "infoDesc": "Research space for industrial instrumentation and sensor networks."
+      }
+    ],
+    "floor": "Floor 1",
+    "category": "department",
+    "block": "Academic Wing"
+  },
+  "it_1": {
+    "title": "Information Technology Dept (Interior)",
+    "type": "equirectangular",
+    "panorama": "assets/panoramas/IT-1.jpg",
+    "mapPos": {
+      "t": 20.9,
+      "l": 65.3
+    },
+    "hotSpots": [
+      {
+        "pitch": -5.0366,
+        "yaw": 130.4273,
+        "type": "scene",
+        "text": "Exit to IT Triangle",
+        "sceneId": "it_tri_2",
+        "cssClass": "scene-hotspot"
+      },
+      {
+        "pitch": -4.1916,
+        "yaw": -85.2646,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Software Labs",
+        "infoDesc": "Equipped for cloud computing, networking, and software engineering."
+      },
+      {
+        "pitch": -0.0698,
+        "yaw": 145.2786,
+        "cssClass": "info-hotspot",
+        "infoTitle": "Hallway Access",
+        "infoDesc": "Direct route leading to the first floor of Hallway 2."
+      }
+    ],
+    "floor": "Floor 1",
+    "category": "department",
+    "block": "Academic Wing"
+  }
+}

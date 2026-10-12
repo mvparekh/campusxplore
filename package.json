@@ -1,0 +1,22 @@
+{
+  "name": "campus-xplore",
+  "version": "1.0.0",
+  "description": "CampusXplore - Interactive 2D Map & 360° Virtual Campus Tour",
+  "private": true,
+  "scripts": {
+    "start": "serve . -l 3000",
+    "dev": "serve . -l 3000",
+    "build": "echo \"Production ready static site\""
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "keywords": [
+    "virtual-tour",
+    "pannellum",
+    "360-panorama",
+    "interactive-map"
+  ],
+  "author": "SCET CampusXplore Team",
+  "license": "MIT"
+}

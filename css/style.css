@@ -1,0 +1,785 @@
+/* ==========================================================================
+   CampusXplore - Modern 360 Virtual Tour & 2D Map Stylesheet
+   ========================================================================== */
+
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --accent: #06b6d4;
+    --accent-glow: rgba(6, 182, 212, 0.4);
+    --bg-dark: #0f172a;
+    --glass-bg: rgba(15, 23, 42, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-hover: rgba(30, 41, 59, 0.95);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --danger: #ef4444;
+    --success: #10b981;
+    --radar-color: rgba(99, 102, 241, 0.45);
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.35);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    user-select: none;
+}
+
+/* ==========================================================================
+   360 Panorama Viewport
+   ========================================================================== */
+#panorama-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#panorama {
+    width: 100%;
+    height: 100%;
+}
+
+/* Custom Pannellum Hotspot Styles */
+.pnlm-hotspot-base.scene-hotspot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.92);
+    background-image: url('../assets/icons/arrow-up.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px;
+    border: 2px solid var(--primary);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), 0 0 12px rgba(99, 102, 241, 0.5);
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.pnlm-hotspot-base.scene-hotspot:hover {
+    transform: scale(1.22) translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 20px rgba(99, 102, 241, 0.8);
+    background-color: #ffffff;
+}
+
+.pnlm-hotspot-base.info-hotspot {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    background-image: url('../assets/icons/info.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px;
+}
+
+.pnlm-hotspot-base.info-hotspot:hover {
+    transform: scale(1.2);
+    background-color: var(--primary-hover);
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.7);
+}
+
+.info-pulse-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    animation: ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ==========================================================================
+   Header Navigation Bar
+   ========================================================================== */
+#tour-header {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    height: 64px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    box-shadow: var(--shadow-soft);
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-brand-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-glow);
+}
+
+.brand-text h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #ffffff 30%, #cbd5e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-text span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    display: block;
+}
+
+.header-center-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--glass-border);
+    padding: 6px 14px;
+    border-radius: 30px;
+}
+
+.location-chip {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.floor-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-icon img, .btn-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+
+.btn-primary-pill {
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: white;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.5);
+}
+
+/* ==========================================================================
+   Quick Scene Selector & Filter Drawer
+   ========================================================================== */
+#scene-search-bar {
+    position: absolute;
+    top: 92px;
+    left: 16px;
+    width: 320px;
+    z-index: 95;
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px 8px 34px;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.search-input-wrapper input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.category-filter-chips {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.filter-chip {
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.filter-chip.active {
+    background: var(--primary);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.filter-chip:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--text-main);
+}
+
+#scene-dropdown-list {
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#scene-dropdown-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+#scene-dropdown-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.scene-item-btn {
+    width: 100%;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid transparent;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.15s ease;
+}
+
+.scene-item-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateX(2px);
+}
+
+.scene-item-btn.active {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Interactive 2D Map Block & Radar Cone
+   ========================================================================== */
+#map-block {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    width: 320px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    z-index: 90;
+    overflow: hidden;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s ease, opacity 0.3s ease;
+}
+
+#map-block.minimized {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#map-block.minimized #map-header,
+#map-block.minimized #map-wrapper,
+#map-block.minimized #map-floor-bar {
+    display: none;
+}
+
+#map-block.minimized .map-expand-btn {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.map-expand-btn {
+    display: none;
+}
+
+#map-header {
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.map-header-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-main);
+}
+
+.map-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.map-btn-tiny {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.map-btn-tiny:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Floor Switcher Toolbar */
+#map-floor-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.floor-tab-btn {
+    flex: 1;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.floor-tab-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+/* Map Wrapper & Layers */
+#map-wrapper {
+    position: relative;
+    width: 100%;
+    line-height: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+#campusMapImage {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: brightness(0.92) contrast(1.05);
+    transition: filter 0.3s ease;
+}
+
+/* 2D Map Pins Layer */
+#map-pins-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.map-scene-pin {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: auto;
+    z-index: 10;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.map-scene-pin.dept { background-color: #818cf8; }
+.map-scene-pin.landmark { background-color: #34d399; }
+.map-scene-pin.pathway { background-color: #fbbf24; }
+
+.map-scene-pin:hover {
+    transform: translate(-50%, -50%) scale(1.6);
+    z-index: 25;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+.map-scene-pin.dimmed {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Tooltip for Pins */
+.map-scene-pin::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.95);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    border: 1px solid var(--glass-border);
+    pointer-events: none;
+    z-index: 30;
+    box-shadow: var(--shadow-soft);
+}
+
+.map-scene-pin:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Active User Marker & Synchronized Radar Cone */
+#map-pointer {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #ef4444;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 20;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+    pointer-events: none;
+}
+
+#map-pointer-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid #ef4444;
+    animation: userPulse 1.8s infinite;
+}
+
+@keyframes userPulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* Radar / Field of View Directional Cone */
+#radar-cone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    margin-top: -45px;
+    margin-left: -45px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from -35deg,
+        transparent 0deg,
+        rgba(99, 102, 241, 0.05) 5deg,
+        rgba(99, 102, 241, 0.35) 25deg,
+        rgba(6, 182, 212, 0.55) 35deg,
+        rgba(99, 102, 241, 0.35) 45deg,
+        rgba(99, 102, 241, 0.05) 65deg,
+        transparent 70deg
+    );
+    pointer-events: none;
+    z-index: 15;
+    transform-origin: center center;
+    transition: transform 0.05s linear;
+}
+
+/* ==========================================================================
+   Info Flashcard / Detail Modal
+   ========================================================================== */
+#info-modal {
+    position: fixed;
+    top: 92px;
+    right: 24px;
+    width: 320px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px) scale(0.96);
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#info-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 8px;
+}
+
+.modal-header h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+
+.modal-close-btn:hover {
+    color: #ffffff;
+}
+
+#modal-body {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #cbd5e1;
+}
+
+/* Compass Indicator */
+#compass-widget {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 80;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#compass-needle {
+    width: 28px;
+    height: 28px;
+    transform-origin: center center;
+    transition: transform 0.05s linear;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 768px) {
+    #tour-header {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 56px;
+        padding: 0 12px;
+    }
+
+    .brand-text span {
+        display: none;
+    }
+
+    .header-center-info {
+        display: none;
+    }
+
+    #scene-search-bar {
+        top: 76px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+    }
+
+    #map-block {
+        bottom: 16px;
+        right: 16px;
+        width: 240px;
+    }
+
+    #info-modal {
+        top: auto;
+        bottom: 80px;
+        left: 16px;
+        right: 16px;
+        width: auto;
+    }
+
+    #compass-widget {
+        bottom: 16px;
+        left: 16px;
+        width: 42px;
+        height: 42px;
+    }
+}
