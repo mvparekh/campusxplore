@@ -1,3 +1,5 @@
 legacy/
 .git/
-
+.gitignore
+.env.example
+firestore.rules
