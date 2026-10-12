@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .qr-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        #qrCode {
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        #qrCode img {
+            width: 250px;
+            height: 250px;
+            display: block;
+        }
+        
+        .scan-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .scan-instruction {
+            color: #666;
+            margin: 10px 0 20px;
+            font-size: 14px;
+        }
+        
+        .form-url {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #667eea;
+            word-break: break-all;
+            margin: 20px 0;
+            border: 1px dashed #667eea;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+        
+        .copy-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .feature-item {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .feature-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            #qrCode img {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .features {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Scan to Register</h1>
+        <p class="subtitle">Use your phone camera to scan the QR code and access the registration form</p>
+        
+        <div class="qr-container">
+            <div id="qrCode"></div>
+            
+            <div class="scan-text">Ready to Scan</div>
+            <p class="scan-instruction">Point your camera at the QR code above to open the registration form</p>
+        </div>
+        
+        <div class="form-url" id="formUrl">
+            Loading registration link...
+        </div>
+        
+        <button class="copy-btn" onclick="copyUrl()">📋 Copy Registration Link</button>
+        
+        <a href="#" id="downloadQR" class="download-btn" download="registration-qr.png">⬇️ Download QR Code</a>
+        
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">📱</div>
+                <div class="feature-text">Scan with phone</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">Instant access</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔄</div>
+                <div class="feature-text">Share easily</div>
+            </div>
+        </div>
+        
+        <p class="note">After scanning, you'll be redirected to the registration form where you can enter your details</p>
+    </div>
+
+    <!-- Include QR Code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        // Get the form URL (the actual registration page)
+        // Replace this with your actual form page URL
+        const formPageUrl = window.location.href.replace('qr-code-page.html', 'register.html');
+        
+        // Generate QR Code that points to the registration form
+        const qrCodeContainer = document.getElementById('qrCode');
+        const qrCode = new QRCode(qrCodeContainer, {
+            text: formPageUrl,  // This URL will open the registration form when scanned
+            width: 250,
+            height: 250,
+            colorDark: '#667eea',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        // Display the form URL
+        document.getElementById('formUrl').textContent = formPageUrl;
+        
+        // Set up download link for QR code
+        setTimeout(() => {
+            const qrImage = document.querySelector('#qrCode img');
+            if (qrImage) {
+                const downloadBtn = document.getElementById('downloadQR');
+                downloadBtn.href = qrImage.src;
+            }
+        }, 500);
+        
+        // Copy URL function
+        function copyUrl() {
+            const formUrl = document.getElementById('formUrl').textContent;
+            navigator.clipboard.writeText(formUrl).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✓ Copied!';
+                copyBtn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '#667eea';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy URL. Please select and copy manually.');
+            });
+        }
+
+        // Optional: Show a message when someone visits this page
+        console.log('QR Code Page - Scan the code to access the registration form');
+    </script>
+</body>
+</html>
