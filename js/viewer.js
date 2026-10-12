@@ -200,3 +200,4 @@ class PanoramaViewer {
 
 // Export for module or global use
 window.PanoramaViewer = PanoramaViewer;
+

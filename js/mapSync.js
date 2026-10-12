@@ -190,3 +190,4 @@ class MapSync {
 
 // Export for module or global use
 window.MapSync = MapSync;
+

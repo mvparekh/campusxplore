@@ -18,6 +18,16 @@
     <!-- Main 360 Viewport -->
     <main id="panorama-container">
         <div id="panorama"></div>
+
+        <!-- In-Tour Floating Action Cluster -->
+        <div class="viewer-action-cluster">
+            <button class="viewer-floating-btn" id="scene-bookmark-btn" title="Save this spot to bookmarks">
+                <img src="assets/icons/bookmark.svg" alt="Bookmark icon">
+            </button>
+            <button class="viewer-floating-btn" id="scene-review-btn" title="View notes and reviews">
+                <img src="assets/icons/star.svg" alt="Review star icon">
+            </button>
+        </div>
     </main>
 
     <!-- Header Navigation -->
@@ -39,13 +49,39 @@
         </div>
 
         <div class="header-actions">
+            <!-- Audio Voiceover Toggle -->
             <button class="btn-icon" id="audio-toggle-btn" title="Toggle Voice Narration">
                 <img src="assets/icons/sound-off.svg" alt="Audio narration toggle">
             </button>
 
-            <button class="btn-primary-pill" id="reset-tour-btn">
-                <img src="assets/icons/reset.svg" alt="Reset" style="width: 14px; height: 14px; filter: invert(1);">
-                <span>Reset Tour</span>
+            <!-- Bookmarks Drawer Button (Authenticated) -->
+            <button class="btn-icon" id="bookmarks-drawer-btn" title="Saved Locations" style="display: none;">
+                <img src="assets/icons/bookmark.svg" alt="Bookmarks">
+            </button>
+
+            <!-- User Profile Pill (Authenticated) -->
+            <div class="user-profile-pill" id="user-profile-pill" style="display: none;">
+                <div class="user-avatar-circle" id="user-avatar-letter">U</div>
+                <div class="user-meta-info">
+                    <span class="user-name-text" id="user-display-name">Student</span>
+                    <span class="user-role-badge" id="user-role-text">student</span>
+                </div>
+            </div>
+
+            <!-- Sign Out Button (Authenticated) -->
+            <button class="btn-icon" id="auth-signout-btn" title="Sign Out" style="display: none;">
+                <img src="assets/icons/user.svg" alt="Sign out" style="filter: opacity(0.85);">
+            </button>
+
+            <!-- Sign In Trigger (Unauthenticated) -->
+            <button class="btn-primary-pill" id="auth-open-btn">
+                <img src="assets/icons/user.svg" alt="Sign in" style="width: 14px; height: 14px; filter: invert(1);">
+                <span>Sign In</span>
+            </button>
+
+            <!-- Reset Tour -->
+            <button class="btn-icon" id="reset-tour-btn" title="Reset to Entrance">
+                <img src="assets/icons/reset.svg" alt="Reset">
             </button>
         </div>
     </header>
@@ -125,12 +161,142 @@
         </div>
     </div>
 
+    <!-- ====================================================================
+         Bookmarks Slide-out Drawer
+         ==================================================================== -->
+    <div id="bookmarks-drawer" role="complementary" aria-label="Saved Bookmarks">
+        <div class="drawer-header">
+            <h3><span>🔖</span> Saved Locations</h3>
+            <button class="modal-close-btn" id="bookmarks-close-btn">×</button>
+        </div>
+        <div class="bookmarks-list" id="bookmarks-list-container">
+            <!-- Dynamic bookmarks injected by main.js -->
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         Authentication Modal (Sign In & Sign Up)
+         ==================================================================== -->
+    <div class="modal-backdrop" id="auth-modal-backdrop" role="dialog" aria-modal="true">
+        <div class="auth-modal-card">
+            <div class="auth-header">
+                <h2 id="auth-modal-title">Welcome to CampusXplore</h2>
+                <button class="modal-close-btn" id="auth-close-btn">×</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tab-sign-in">Sign In</button>
+                <button class="auth-tab-btn" id="tab-sign-up">Sign Up</button>
+            </div>
+
+            <!-- Error Banner -->
+            <div class="auth-error-banner" id="auth-error-banner"></div>
+
+            <!-- Sign In Form -->
+            <form id="form-sign-in">
+                <div class="auth-form-group">
+                    <label for="signin-email">Email Address</label>
+                    <input type="email" id="signin-email" placeholder="student@scet.ac.in" required autocomplete="email">
+                </div>
+                <div class="auth-form-group">
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-auth-submit" id="btn-submit-signin">
+                    <span>Sign In</span>
+                </button>
+            </form>
+
+            <!-- Sign Up Form (hidden by default) -->
+            <form id="form-sign-up" style="display: none;">
+                <div class="auth-form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name">
+                </div>
+                <div class="auth-form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="student@scet.ac.in" required autocomplete="email">
+                </div>
+                <div class="auth-form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Min 6 characters" minlength="6" required autocomplete="new-password">
+                </div>
+                <div class="auth-form-group">
+                    <label for="signup-role">Role</label>
+                    <select id="signup-role">
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="visitor">Visitor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-auth-submit" id="btn-submit-signup">
+                    <span>Create Account</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Google Sign-In Option -->
+            <button type="button" class="btn-google-auth" id="btn-google-auth">
+                <img src="assets/icons/google.svg" alt="Google">
+                <span>Continue with Google</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         Reviews & Notes Modal
+         ==================================================================== -->
+    <div class="modal-backdrop" id="reviews-modal-backdrop" role="dialog" aria-modal="true">
+        <div class="auth-modal-card" style="max-width: 440px;">
+            <div class="modal-header">
+                <div>
+                    <h3 id="review-scene-title">Campus Spot Notes</h3>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Leave a note or review for this location</span>
+                </div>
+                <button class="modal-close-btn" id="reviews-close-btn">×</button>
+            </div>
+
+            <!-- Review Submission Form -->
+            <form id="form-submit-review" style="margin-top: 14px;">
+                <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">YOUR RATING</label>
+                <div class="star-rating-selector" id="star-rating-selector">
+                    <span data-value="1">★</span>
+                    <span data-value="2">★</span>
+                    <span data-value="3">★</span>
+                    <span data-value="4">★</span>
+                    <span data-value="5" class="selected">★</span>
+                </div>
+
+                <div class="auth-form-group">
+                    <label for="review-comment-input">Comments & Observations</label>
+                    <textarea id="review-comment-input" rows="3" placeholder="Add helpful notes, lab equipment details, or directions..." style="background: rgba(0,0,0,0.35); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); padding: 10px; color: #fff; font-family: inherit; font-size: 0.88rem; resize: vertical;" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-auth-submit" id="btn-submit-review" style="padding: 10px;">
+                    <span>Submit Note</span>
+                </button>
+            </form>
+
+            <!-- Existing Reviews List -->
+            <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 14px;">
+                <h4 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase;">Community Notes</h4>
+                <div id="reviews-list-container" style="max-height: 180px; overflow-y: auto;">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Pannellum 360 Viewer JS -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
     <!-- Application Modules -->
     <script src="js/viewer.js"></script>
     <script src="js/mapSync.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

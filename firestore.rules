@@ -1,0 +1,228 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Document ID: {userId} (matches Firebase Auth UID)
+// Fields:
+//   - email: string (required, valid email format, 3-100 chars)
+//   - displayName: string (required, 1-100 chars)
+//   - role: string (required, enum: 'student', 'visitor', 'faculty')
+//   - createdAt: timestamp (required, immutable)
+//
+// Collection: bookmarks
+// Document ID: {bookmarkId} (auto-generated)
+// Fields:
+//   - userId: string (required, matches request.auth.uid, 1-128 chars, immutable)
+//   - sceneId: string (required, 1-100 chars)
+//   - sceneTitle: string (required, 1-200 chars)
+//   - timestamp: timestamp (required, immutable)
+//
+// Collection: reviews
+// Document ID: {reviewId} (auto-generated)
+// Fields:
+//   - userId: string (required, matches request.auth.uid, 1-128 chars, immutable)
+//   - userEmail: string (required, valid email format, 3-100 chars)
+//   - sceneId: string (required, 1-100 chars)
+//   - rating: int (required, integer in [1, 5])
+//   - comment: string (required, 0-500 chars)
+//   - createdAt: timestamp (required, immutable)
+//
+// Collection: visit_logs
+// Document ID: {logId} (auto-generated)
+// Fields:
+//   - userId: string (required, 1-128 chars, e.g. 'anonymous' or auth UID)
+//   - sceneId: string (required, 1-100 chars)
+//   - timestamp: timestamp (required)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Standard Helper Functions
+    // ===============================================================
+
+    // Check if the request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the authenticated user matches the given userId
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if user has administrative privileges (custom claim or admin token role)
+    function isAdmin() {
+      return isAuthenticated() &&
+        (('admin' in request.auth.token && request.auth.token.admin == true) ||
+         ('role' in request.auth.token && request.auth.token.role == 'admin'));
+    }
+
+    // Validate that all required fields are present in incoming data
+    function hasRequiredFields(data, fields) {
+      return data.keys().hasAll(fields);
+    }
+
+    // Validate that no unexpected fields are present (strict schema enforcement)
+    function hasOnlyAllowedFields(data, fields) {
+      return data.keys().hasOnly(fields);
+    }
+
+    // Validate that specified fields are not altered during an update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // Validate string type and enforce min/max length boundaries (DoS prevention)
+    function isValidString(val, minLen, maxLen) {
+      return val is string &&
+        val.size() >= minLen &&
+        val.size() <= maxLen;
+    }
+
+    // Validate email format and bounded length
+    function isValidEmail(email) {
+      return email is string &&
+        email.size() >= 3 &&
+        email.size() <= 100 &&
+        email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+    }
+
+    // ===============================================================
+    // Domain Validators (Validator Function Pattern)
+    // ===============================================================
+
+    // Domain validator for users/{userId}
+    function isValidUser(data) {
+      return hasRequiredFields(data, ['email', 'displayName', 'role', 'createdAt']) &&
+        hasOnlyAllowedFields(data, ['email', 'displayName', 'role', 'createdAt']) &&
+        isValidEmail(data.email) &&
+        isValidString(data.displayName, 1, 100) &&
+        data.role is string &&
+        data.role in ['student', 'visitor', 'faculty'] &&
+        data.createdAt is timestamp;
+    }
+
+    // Domain validator for bookmarks/{bookmarkId}
+    function isValidBookmark(data) {
+      return hasRequiredFields(data, ['userId', 'sceneId', 'sceneTitle', 'timestamp']) &&
+        hasOnlyAllowedFields(data, ['userId', 'sceneId', 'sceneTitle', 'timestamp']) &&
+        isValidString(data.userId, 1, 128) &&
+        isValidString(data.sceneId, 1, 100) &&
+        isValidString(data.sceneTitle, 1, 200) &&
+        data.timestamp is timestamp;
+    }
+
+    // Domain validator for reviews/{reviewId}
+    function isValidReview(data) {
+      return hasRequiredFields(data, ['userId', 'userEmail', 'sceneId', 'rating', 'comment', 'createdAt']) &&
+        hasOnlyAllowedFields(data, ['userId', 'userEmail', 'sceneId', 'rating', 'comment', 'createdAt']) &&
+        isValidString(data.userId, 1, 128) &&
+        isValidEmail(data.userEmail) &&
+        isValidString(data.sceneId, 1, 100) &&
+        data.rating is int &&
+        data.rating >= 1 &&
+        data.rating <= 5 &&
+        data.comment is string &&
+        data.comment.size() <= 500 &&
+        data.createdAt is timestamp;
+    }
+
+    // Domain validator for visit_logs/{logId}
+    function isValidVisitLog(data) {
+      return hasRequiredFields(data, ['userId', 'sceneId', 'timestamp']) &&
+        hasOnlyAllowedFields(data, ['userId', 'sceneId', 'timestamp']) &&
+        isValidString(data.userId, 1, 128) &&
+        isValidString(data.sceneId, 1, 100) &&
+        data.timestamp is timestamp;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // 1. User Profiles: users/{userId}
+    match /users/{userId} {
+      // Read: Allowed for authenticated campus users
+      allow read: if isAuthenticated();
+
+      // Create: Authenticated user creating their own document with valid schema and allowed role
+      allow create: if isOwner(userId) &&
+        isValidUser(request.resource.data);
+
+      // Update: Only document owner can update; schema remains valid and createdAt is immutable
+      allow update: if isOwner(userId) &&
+        isValidUser(request.resource.data) &&
+        areImmutableFieldsUnchanged(['createdAt']);
+
+      // Delete: Only document owner can delete their own user account
+      allow delete: if isOwner(userId);
+    }
+
+    // 2. Scene Bookmarks: bookmarks/{bookmarkId}
+    match /bookmarks/{bookmarkId} {
+      // Read: Allowed only for the bookmark owner
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+      // Create: Allowed only for authenticated user creating bookmark for self with valid schema
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidBookmark(request.resource.data);
+
+      // Update: Allowed only for the bookmark owner; ownership and creation timestamp are immutable
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidBookmark(request.resource.data) &&
+        areImmutableFieldsUnchanged(['userId', 'timestamp']);
+
+      // Delete: Allowed only for the bookmark owner
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 3. Campus Location Reviews: reviews/{reviewId}
+    match /reviews/{reviewId} {
+      // Read: Public read for all visitors (authenticated or unauthenticated)
+      allow read: if true;
+
+      // Create: Authenticated users only, must author under own UID with valid schema
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidReview(request.resource.data);
+
+      // Update: Allowed only for the author; userId and createdAt remain immutable
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidReview(request.resource.data) &&
+        areImmutableFieldsUnchanged(['userId', 'createdAt']);
+
+      // Delete: Allowed only for the review author
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 4. Scene Visit Telemetry: visit_logs/{logId}
+    match /visit_logs/{logId} {
+      // Read: Allowed for authenticated campus users or administrators
+      allow read: if isAuthenticated() || isAdmin();
+
+      // Create: Telemetry logging allowed for anyone (including unauthenticated visitors)
+      allow create: if isValidVisitLog(request.resource.data);
+
+      // Update/Delete: Audit and telemetry logs are strictly immutable
+      allow update, delete: if false;
+    }
+
+    // ===============================================================
+    // Root Default Deny
+    // ===============================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
